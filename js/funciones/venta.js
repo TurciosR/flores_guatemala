@@ -794,20 +794,21 @@ function totales() {
 
         $('#totalfactura').val(total_final_mostrar);
 
-        var con_pago = $('#con_pago').val();
-        $('#total_recargo').html(0.00);
-        if(con_pago==2)
-        {
-          recargo = total_final_mostrar * 0.03;
-          recargo = recargo.toFixed(2);
-          $('#total_recargo').html(recargo);
-        }
-        if (con_pago==3)
-        {
-          recargo = total_final_mostrar * 0.05;
-          recargo = recargo.toFixed(2);
-          $('#total_recargo').html(recargo);
-        }
+        //RECARGO CUANDO SE ELIGE UN TIPO DE PAGO
+        // var con_pago = $('#con_pago').val();
+        // $('#total_recargo').html(0.00);
+        // if(con_pago==2)
+        // {
+        //   recargo = total_final_mostrar * 0.03;
+        //   recargo = recargo.toFixed(2);
+        //   $('#total_recargo').html(recargo);
+        // }
+        // if (con_pago==3)
+        // {
+        //   recargo = total_final_mostrar * 0.05;
+        //   recargo = recargo.toFixed(2);
+        //   $('#total_recargo').html(recargo);
+        // }
 
 
     } else {
@@ -905,27 +906,71 @@ function totales() {
 
         $('#totalfactura').val(total_final_mostrar);
 
-        var con_pago = $('#con_pago').val();
-        $('#total_recargo').html(0.00);
-        if(con_pago==2)
-        {
-          recargo = total_final_mostrar * 0.03;
-          recargo = recargo.toFixed(2);
-          $('#total_recargo').html(recargo);
-        }
-        if (con_pago==3)
-        {
-          recargo = total_final_mostrar * 0.05;
-          recargo = recargo.toFixed(2);
-          $('#total_recargo').html(recargo);
-        }
+        //RECARGO CUANDO SE ELIGE UN TIPO DE PAGO
+        // var con_pago = $('#con_pago').val();
+        // $('#total_recargo').html(0.00);
+        // if(con_pago==2)
+        // {
+        //   recargo = total_final_mostrar * 0.03;
+        //   recargo = recargo.toFixed(2);
+        //   $('#total_recargo').html(recargo);
+        // }
+        // if (con_pago==3)
+        // {
+        //   recargo = total_final_mostrar * 0.05;
+        //   recargo = recargo.toFixed(2);
+        //   $('#total_recargo').html(recargo);
+        // }
     }
 }
 
+/**
+ * Al cambiar el tipo de pago se va a mostrar
+ * los campos para pedir dui y numero de operacion
+ */
 $(document).on('change', '#con_pago', function(event) {
-  event.preventDefault();
-  /* Act on the event */
-  totales();
+    event.preventDefault();
+    var condicion = parseInt($(this).val());
+  
+    switch (condicion) {
+      case 0:
+      $('.cdui').hide();
+      $('.cope').hide();
+      $('.cban').hide();
+      $('.cche').hide();
+      $('.datos_pago').hide();
+        break;
+      case 1:
+      $('.cdui').hide();
+      $('.cope').hide();
+      $('.cban').hide();
+      $('.cche').hide();
+      $('.datos_pago').hide();
+        break;
+      case 2:
+      $('.cdui').show();
+      $('.cope').show();
+      $('.cban').hide();
+      $('.cche').hide();
+      $('.datos_pago').show();
+        break;
+      case 3:
+      $('.cdui').show();
+      $('.cope').show();
+      $('.cban').hide();
+      $('.cche').hide();
+      $('.datos_pago').show();
+        break;
+      case 4:
+      $('.cdui').show();
+      $('.cope').show();
+      $('.cban').hide();
+      $('.cche').hide();
+      $('.datos_pago').show();
+        break;
+      default:
+    }
+    totales();
 });
 
 function totalFact() {
@@ -1293,6 +1338,15 @@ function senddata() {
         error = true
     }
 
+    /**
+     * Obtenemos los datos registrados de acuerdo al tipo de
+     * pago que se selecciono (Ya sea Tarjeta, Bitcoin, o Transferencia)
+    */
+    var pago_dui = $('.pago_dui').val();
+    var pago_operacion = $('.pago_operacion').val();
+    var pago_banco = $('.pago_banco').val();
+    var pago_cheque = $('.pago_cheque').val();
+
     var dataString = 'process=insert' + '&cuantos=' + i + '&fecha_movimiento=' + fecha_movimiento;
     dataString += '&id_cliente=' + id_cliente + '&total=' + total;
     dataString += '&id_vendedor=' + id_vendedor + '&json_arr=' + json_arr;
@@ -1311,6 +1365,10 @@ function senddata() {
     dataString += '&caja=' + caja;
     dataString += '&credito=' + credito;
     dataString += '&cargo_tarjeta=' + cargo_tarjeta;
+    dataString += '&pago_dui=' + pago_dui;
+    dataString += '&pago_operacion=' + pago_operacion;
+    dataString += '&pago_banco=' + pago_banco;
+    dataString += '&pago_cheque=' + pago_cheque;
 
     var sel_vendedor = 1;
     if (credito == "") {
@@ -1331,6 +1389,45 @@ function senddata() {
     if (i == 0) {
         msg = 'Seleccione al menos un producto !';
         sel_vendedor = 0;
+    }
+
+    /**
+     * Validamos que los campos que se habilitan para
+     * el tipo de pago en Tarjeta, Bitcoin, Transferencia
+     * sean digitados
+     */
+    var condicionp = parseInt(tipo_pago);
+    switch (condicionp) {
+        //Tipo pago contado
+      case 0:
+          //Do nothing
+        break;
+        //Tipo pago credito
+      case 1:
+          //Do nothing
+        break;
+        //Tipo pago Tarjeta
+      case 2:
+        if ($('.pago_dui').val()=='' || $('.pago_operacion').val()=='') {
+            msg = 'Llene datos de pago por favor';
+            sel_vendedor = 0;
+        }
+        break;
+        //Tipo pago Bitcoin
+      case 3:
+        if ($('.pago_dui').val()=='' || $('.pago_operacion').val()=='') {
+            msg = 'Llene datos de pago por favor';
+            sel_vendedor = 0;
+        }
+        break;
+        //Tipo pago Transferencia
+      case 4:
+        if ($('.pago_dui').val()=='' || $('.pago_operacion').val()=='') {
+            msg = 'Llene datos de pago por favor';
+            sel_vendedor = 0;
+        }
+        break;
+      default:
     }
 
     if (sel_vendedor == 1) {

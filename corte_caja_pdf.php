@@ -367,7 +367,77 @@ if($cuenta_dev > 0)
   $pdf->Cell(36,5,utf8_decode(number_format($devolucion, 2)),0,1,'R',0);
 }
 
+//DESGLOSE DE OTROS PAGOS REALIZADOS EN CAJA
+$pdf->Cell(20,5,"",0,1,'C',0);
+  //$pdf->SetXY($set_x, $set_y);
+$pdf->Cell(200,5,utf8_decode("OTROS PAGOS"),0,1,'C',0);
 
+//------------pagos con tarjeta
+$sumatoria_tarjeta = 0;
+$sql_tarjeta = _query("SELECT * FROM factura WHERE factura.id_apertura = '$id_apertura' AND credito = 2");
+$cuenta_tarjeta = _num_rows($sql_tarjeta);
+if($cuenta_tarjeta > 0){
+  //$pdf->SetXY($set_x, $set_y);
+  $set_x = $pdf->GetX();
+  $set_y = $pdf->GetY();
+  $pdf->Line($set_x,$set_y,$set_x+200,$set_y);
+  $pdf->Cell(150,5,utf8_decode("TOTAL PAGOS CON TARJETA"),0,0,'L',0);
+
+  while ($row_tarjeta = _fetch_array($sql_tarjeta))
+  {
+    $valor = $row_tarjeta['total'];
+    $sumatoria_tarjeta += $valor;
+  }
+
+  $pdf->Cell(50,5,number_format($sumatoria_tarjeta, 2, '.', ','),0,1,'R',0);
+}else {
+  $set_x = $pdf->GetX();
+  $set_y = $pdf->GetY();
+  $pdf->Line($set_x,$set_y,$set_x+200,$set_y);
+  $pdf->Cell(150,5,utf8_decode("TOTAL PAGOS CON TARJETA"),0,0,'L',0);
+  $pdf->Cell(50,5,number_format(0, 2, '.', ','),0,1,'R',0);
+}
+
+
+//------------pagos con bitcoin
+$sumatoria_bitcoin = 0;
+$sql_btc = _query("SELECT * FROM factura WHERE factura.id_apertura = '$id_apertura' AND credito = 3");
+$cuenta_btc = _num_rows($sql_btc);
+if($cuenta_btc > 0){
+  //$pdf->SetXY($set_x, $set_y);
+  $pdf->Cell(150,5,utf8_decode("TOTAL PAGOS CON BITCOIN"),0,0,'L',0);
+
+  while ($row_btc = _fetch_array($sql_btc))
+  {
+    $valor = $row_btc['total'];
+    $sumatoria_bitcoin += $valor;
+  }
+
+  $pdf->Cell(50,5,number_format($sumatoria_bitcoin, 2, '.', ','),0,1,'R',0);
+}else {
+  $pdf->Cell(150,5,utf8_decode("TOTAL PAGOS CON BITCOIN"),0,0,'L',0);
+  $pdf->Cell(50,5,number_format(0, 2, '.', ','),0,1,'R',0);
+}
+
+//------------pagos con transferencia
+$sumatoria_tranferencia = 0;
+$sql_transf = _query("SELECT * FROM factura WHERE factura.id_apertura = '$id_apertura' AND credito = 4");
+$cuenta_transf = _num_rows($sql_transf);
+if($cuenta_transf > 0){
+  //$pdf->SetXY($set_x, $set_y);
+  $pdf->Cell(150,5,utf8_decode("TOTAL PAGOS POR MEDIO DE TRANSFERENCIA"),0,0,'L',0);
+
+  while ($row_transf = _fetch_array($sql_transf))
+  {
+    $valor = $row_transf['total'];
+    $sumatoria_transferencia += $valor;
+  }
+
+  $pdf->Cell(50,5,number_format($sumatoria_transferencia, 2, '.', ','),0,1,'R',0);
+}else {
+  $pdf->Cell(150,5,utf8_decode("TOTAL PAGOS POR MEDIO DE TRANSFERENCIA"),0,0,'L',0);
+  $pdf->Cell(50,5,number_format(0, 2, '.', ','),0,1,'R',0);
+}
 
 /////////////////Saldo caja
 

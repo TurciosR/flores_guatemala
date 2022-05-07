@@ -1,6 +1,6 @@
 <?php
 $username = "root";
-$password = "admin$2022**.";
+$password = "1234";
 $hostname = "localhost";
 $dbname = "fguatemala";
 date_default_timezone_set('America/El_Salvador');
