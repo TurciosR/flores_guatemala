@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4deb2
+-- version 4.6.6deb5ubuntu0.5
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 23-05-2022 a las 11:01:47
--- Versión del servidor: 10.5.15-MariaDB-0+deb11u1
--- Versión de PHP: 7.4.28
+-- Tiempo de generación: 06-05-2022 a las 10:12:04
+-- Versión del servidor: 10.1.48-MariaDB-0ubuntu0.18.04.1
+-- Versión de PHP: 7.2.24-0ubuntu0.18.04.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -110,9 +109,7 @@ CREATE TABLE `apertura_caja` (
 --
 
 INSERT INTO `apertura_caja` (`id_server`, `unique_id`, `id_sucursal`, `id_apertura`, `fecha`, `hora`, `caja`, `turno_vigente`, `id_empleado`, `turno`, `monto_apertura`, `monto_ch`, `monto_ch_actual`, `tiket_inicia`, `factura_inicia`, `credito_fiscal_inicia`, `dev_inicia`, `vigente`, `monto_vendido`) VALUES
-(0, 'S626971d3933663.86143635', 1, 1, '2022-04-27', '10:39:46', 1, 0, 1, 2, 20, '0.00', '0.00', 0, 0, 0, 0, 0, 146.75),
-(0, 'S62754464a0d5d0.81766253', 1, 2, '2022-05-06', '09:53:08', 1, 0, 1, 2, 1, '0.00', '0.00', 0, 0, 0, 0, 0, 1),
-(0, 'S627687f9882303.37059472', 1, 3, '2022-05-07', '08:53:45', 1, 1, 1, 1, 1, '0.00', '0.00', 0, 0, 0, 0, 0, 3.5);
+(0, 'S626971d3933663.86143635', 1, 1, '2022-04-27', '10:39:46', 1, 1, 1, 1, 20, '0.00', '0.00', 0, 0, 0, 0, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -162,7 +159,7 @@ CREATE TABLE `caja` (
 --
 
 INSERT INTO `caja` (`id_server`, `unique_id`, `id_sucursal`, `id_caja`, `nombre`, `serie`, `desde`, `hasta`, `correlativo_dispo`, `resolucion`, `fecha`, `activa`) VALUES
-(1, 'O60d7df1abdfca2.64813667', 1, 1, 'Caja 1', '22MS0000001', 1, 100000, 7, 'ASC-15041-042714-2022', '2022-02-22', 1);
+(1, 'O60d7df1abdfca2.64813667', 1, 1, 'Caja 1', '22MS0000001', 1, 100000, 4, 'ASC-15041-042714-2022', '2022-02-22', 1);
 
 -- --------------------------------------------------------
 
@@ -247,7 +244,7 @@ CREATE TABLE `cliente` (
   `categoria` int(1) DEFAULT NULL,
   `nombre` varchar(200) DEFAULT NULL,
   `razon_social` varchar(250) NOT NULL,
-  `direccion` text DEFAULT NULL,
+  `direccion` text,
   `municipio` varchar(100) DEFAULT NULL,
   `depto` varchar(100) DEFAULT NULL,
   `pais` varchar(11) DEFAULT NULL,
@@ -412,7 +409,7 @@ CREATE TABLE `consignacion` (
   `numero_doc` varchar(30) NOT NULL,
   `total` float NOT NULL,
   `id_usuario` int(11) NOT NULL,
-  `anulada` tinyint(1) NOT NULL DEFAULT 0,
+  `anulada` tinyint(1) NOT NULL DEFAULT '0',
   `id_sucursal` int(11) NOT NULL,
   `finalizada` tinyint(1) NOT NULL,
   `id_empleado` int(11) NOT NULL,
@@ -532,15 +529,6 @@ CREATE TABLE `controlcaja` (
   `totcfexe` decimal(10,2) NOT NULL,
   `czxe` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `controlcaja`
---
-
-INSERT INTO `controlcaja` (`id_server`, `unique_id`, `id_sucursal`, `id_corte`, `fecha`, `id_empleado`, `id_apertura`, `caja`, `turno`, `cajero`, `fecha_corte`, `hora_corte`, `tiket`, `ticket_e`, `tinicio`, `tfinal`, `totalnot`, `texento`, `tgravado`, `totalt`, `finicio`, `ffinal`, `totalnof`, `fexento`, `fgravado`, `totalf`, `cfinicio`, `cffinal`, `totalnocf`, `cfexento`, `cfgravado`, `totalcf`, `rinicio`, `rfinal`, `totalnor`, `rexento`, `rgravado`, `totalr`, `cashinicial`, `vtacontado`, `vtaefectivo`, `vtatcredito`, `totalgral`, `subtotal`, `cashfinal`, `diferencia`, `totalnodev`, `totalnoanu`, `depositos`, `vales`, `tarjetas`, `depositon`, `valen`, `tarjetan`, `ingresos`, `tcredito`, `ncortex`, `ncortez`, `ncortezm`, `cerrado`, `tipo_corte`, `monto_ch`, `retencion`, `tinicio_e`, `tfinal_e`, `tdoctexe`, `tottexe`, `finicio_e`, `ffinal_e`, `tdocfexe`, `totfexe`, `cfinicio_e`, `cffinal_e`, `tdoccfexe`, `totcfexe`, `czxe`) VALUES
-(0, 'S6275445f3f3138.95065244', 1, 1, '', 1, 1, NULL, 1, NULL, '2022-04-27', '21:00:00', 0, 0, 1, 3, 0, 0, 9.75, 9.75, 1, 1, 0, 0, 12, 12, 1, 1, 0, 0, 105, 105, 0, 0, 0, 0, 0, 0, 20, NULL, 0, NULL, 146.75, NULL, 146.75, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'C', 0, 0, 0, 0, 0, '0.00', 0, 0, 0, '0.00', 0, 0, 0, '0.00', 0),
-(0, 'S627687f40c5de9.93672072', 1, 2, '', 1, 2, NULL, 1, NULL, '2022-05-06', '21:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, NULL, 0, NULL, 1, NULL, 1, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'C', 0, 0, 0, 0, 0, '0.00', 0, 0, 0, '0.00', 0, 0, 0, '0.00', 0),
-(0, 'S6276a737ed5998.49016578', 1, 3, '', 1, 3, '1', 1, NULL, '2022-05-07', '11:06:58', 6, 0, 4, 5, 2, NULL, NULL, 2.5, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 0, 1, NULL, 0, NULL, 3.5, NULL, 3.5, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'Z', 0, 0, 0, 0, 0, '0.00', 0, 0, 0, '0.00', 0, 0, 0, '0.00', 0);
 
 -- --------------------------------------------------------
 
@@ -772,11 +760,7 @@ CREATE TABLE `detalle_apertura` (
 --
 
 INSERT INTO `detalle_apertura` (`id_server`, `unique_id`, `id_sucursal`, `id_detalle`, `id_apertura`, `turno`, `id_usuario`, `fecha`, `hora`, `vigente`, `caja`) VALUES
-(0, 'S626971d436c434.20996398', 1, 0, 1, 1, 1, '2022-04-27', '10:39:46', 0, 1),
-(0, 'S6275445f4a2be6.47847159', 0, 1, 1, 2, 0, '2022-04-27', '21:00:00', 0, 0),
-(0, 'S62754464b3f547.48893035', 1, 2, 2, 1, 1, '2022-05-06', '09:53:08', 0, 1),
-(0, 'S627687f43fdf49.59671205', 0, 3, 2, 2, 0, '2022-05-06', '21:00:00', 0, 0),
-(0, 'S627687f9997702.00492564', 1, 4, 3, 1, 1, '2022-05-07', '08:53:45', 0, 1);
+(0, 'S626971d436c434.20996398', 1, 0, 1, 1, 1, '2022-04-27', '10:39:46', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -994,7 +978,7 @@ CREATE TABLE `factura` (
   `descuento` float NOT NULL,
   `porcentaje` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
-  `anulada` tinyint(1) NOT NULL DEFAULT 0,
+  `anulada` tinyint(1) NOT NULL DEFAULT '0',
   `id_empleado` int(11) NOT NULL,
   `finalizada` tinyint(1) NOT NULL,
   `impresa` tinyint(1) NOT NULL,
@@ -1019,24 +1003,20 @@ CREATE TABLE `factura` (
   `precio_aut` int(11) NOT NULL,
   `clave` varchar(6) NOT NULL,
   `cargo_tarjeta` decimal(10,2) NOT NULL,
-  `pago_dui` text CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `pago_operacion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci DEFAULT NULL,
-  `efectivo` text DEFAULT NULL,
-  `cambio` text DEFAULT NULL
+  `efectivo` text,
+  `cambio` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `factura`
 --
 
-INSERT INTO `factura` (`id_server`, `unique_id`, `id_sucursal`, `id_factura`, `id_cliente`, `fecha`, `numero_doc`, `referencia`, `numero_ref`, `subtotal`, `sumas`, `suma_gravado`, `iva`, `retencion`, `venta_exenta`, `total_menos_retencion`, `total`, `descuento`, `porcentaje`, `id_usuario`, `anulada`, `id_empleado`, `finalizada`, `impresa`, `tipo`, `serie`, `serie_e`, `num_fact_impresa`, `hora`, `turno`, `id_apertura`, `id_apertura_pagada`, `credito`, `abono`, `saldo`, `afecta`, `tipo_documento`, `caja`, `numero_doc_e`, `num_fact_impresa_e`, `nombre`, `direccion`, `precio_aut`, `clave`, `cargo_tarjeta`, `pago_dui`, `pago_operacion`, `efectivo`, `cambio`) VALUES
-(0, 'S6269721f3f6965.38322137', 1, 0, 1, '2022-04-27', '0000000001_COF', '', 0, 12, 12, 12, 0, 0, 0, 12, 12, 0, 0, 1, 0, 1, 1, 0, 'FACTURA CONSUMIDOR', '18NU000F', '0', '', '10:41:02', 1, 1, 1, 0, 0, 0, 0, 'COF', 1, '0', '0', '', '', 0, '', '0.00', NULL, NULL, NULL, NULL),
-(0, 'S6269876bb41d34.09483176', 1, 1, 1, '2022-04-27', '0000000001_CCF', '', 0, 105, 92.92, 92.92, 12.08, 0, 0, 105, 105, 0, 0, 1, 0, 1, 1, 0, 'CREDITO FISCAL', '18UN000C', '0', '', '12:11:55', 1, 1, 1, 0, 0, 0, 0, 'CCF', 1, '0', '0', '', '', 0, '', '0.00', NULL, NULL, NULL, NULL),
-(0, 'S6269959a3f3258.11273139', 1, 2, 1, '2022-04-27', '0000000001_TIK', '', 0, 7.5, 7.5, 7.5, 0, 0, 0, 7.5, 7.5, 0, 0, 1, 0, 1, 1, 0, 'TICKET', '22MS0000001', '0', '1', '13:12:26', 1, 1, 1, 0, 0, 0, 0, 'TIK', 1, '0', '0', '', '', 0, '', '0.00', NULL, NULL, NULL, NULL),
-(0, 'S6269a749372767.40984088', 1, 3, -1, '2022-04-27', '0000000002_TIK', '', 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 'TICKET', '22MS0000001', '0', '2', '14:27:53', 1, 1, 1, 0, 0, 0, 0, 'TIK', 1, '0', '0', '', '', 0, '', '0.00', NULL, NULL, NULL, NULL),
-(0, 'S6269a91c5a1202.33426792', 1, 4, -1, '2022-04-27', '0000000003_TIK', '', 0, 1.25, 1.25, 1.25, 0, 0, 0, 1.25, 1.25, 0, 0, 1, 0, 1, 1, 1, 'TICKET', '22MS0000001', '0', '3', '14:35:40', 1, 1, 1, 0, 0, 0, 0, 'TIK', 1, '0', '0', '', '', 0, '', '0.00', NULL, NULL, '5', '3.75'),
-(0, 'S62769a41469d14.21954110', 1, 5, -1, '2022-05-07', '0000000004_TIK', '0000001_REF', 1, 1.25, 1.25, 1.25, 0, 0, 0, 1.25, 1.25, 0, 0, 1, 0, 1, 1, 1, 'TICKET', '22MS0000001', '0', '4', '10:11:54', 1, 3, 3, 0, 0, 0, 0, 'TIK', 1, '0', '0', '', '', 0, '', '0.00', '', '', '2', '0.75'),
-(0, 'S62769ad3dc6d12.69190024', 1, 6, -1, '2022-05-07', '0000000005_TIK', '', 0, 1.25, 1.25, 1.25, 0, 0, 0, 1.25, 1.25, 0, 0, 1, 0, 1, 1, 1, 'TICKET', '22MS0000001', '0', '5', '10:14:11', 1, 3, 3, 2, 0, 0, 0, 'TIK', 1, '0', '0', '', '', 0, '', '0.00', '05974059-2', '7378738723HB', '5', '3.75');
+INSERT INTO `factura` (`id_server`, `unique_id`, `id_sucursal`, `id_factura`, `id_cliente`, `fecha`, `numero_doc`, `referencia`, `numero_ref`, `subtotal`, `sumas`, `suma_gravado`, `iva`, `retencion`, `venta_exenta`, `total_menos_retencion`, `total`, `descuento`, `porcentaje`, `id_usuario`, `anulada`, `id_empleado`, `finalizada`, `impresa`, `tipo`, `serie`, `serie_e`, `num_fact_impresa`, `hora`, `turno`, `id_apertura`, `id_apertura_pagada`, `credito`, `abono`, `saldo`, `afecta`, `tipo_documento`, `caja`, `numero_doc_e`, `num_fact_impresa_e`, `nombre`, `direccion`, `precio_aut`, `clave`, `cargo_tarjeta`, `efectivo`, `cambio`) VALUES
+(0, 'S6269721f3f6965.38322137', 1, 0, 1, '2022-04-27', '0000000001_COF', '', 0, 12, 12, 12, 0, 0, 0, 12, 12, 0, 0, 1, 0, 1, 1, 0, 'FACTURA CONSUMIDOR', '18NU000F', '0', '', '10:41:02', 1, 1, 1, 0, 0, 0, 0, 'COF', 1, '0', '0', '', '', 0, '', '0.00', NULL, NULL),
+(0, 'S6269876bb41d34.09483176', 1, 1, 1, '2022-04-27', '0000000001_CCF', '', 0, 105, 92.92, 92.92, 12.08, 0, 0, 105, 105, 0, 0, 1, 0, 1, 1, 0, 'CREDITO FISCAL', '18UN000C', '0', '', '12:11:55', 1, 1, 1, 0, 0, 0, 0, 'CCF', 1, '0', '0', '', '', 0, '', '0.00', NULL, NULL),
+(0, 'S6269959a3f3258.11273139', 1, 2, 1, '2022-04-27', '0000000001_TIK', '', 0, 7.5, 7.5, 7.5, 0, 0, 0, 7.5, 7.5, 0, 0, 1, 0, 1, 1, 0, 'TICKET', '22MS0000001', '0', '1', '13:12:26', 1, 1, 1, 0, 0, 0, 0, 'TIK', 1, '0', '0', '', '', 0, '', '0.00', NULL, NULL),
+(0, 'S6269a749372767.40984088', 1, 3, -1, '2022-04-27', '0000000002_TIK', '', 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 'TICKET', '22MS0000001', '0', '2', '14:27:53', 1, 1, 1, 0, 0, 0, 0, 'TIK', 1, '0', '0', '', '', 0, '', '0.00', NULL, NULL),
+(0, 'S6269a91c5a1202.33426792', 1, 4, -1, '2022-04-27', '0000000003_TIK', '', 0, 1.25, 1.25, 1.25, 0, 0, 0, 1.25, 1.25, 0, 0, 1, 0, 1, 1, 1, 'TICKET', '22MS0000001', '0', '3', '14:35:40', 1, 1, 1, 0, 0, 0, 0, 'TIK', 1, '0', '0', '', '', 0, '', '0.00', '5', '3.75');
 
 -- --------------------------------------------------------
 
@@ -1051,7 +1031,7 @@ CREATE TABLE `factura_detalle` (
   `id_factura_detalle` int(11) NOT NULL,
   `id_factura` int(11) NOT NULL,
   `id_prod_serv` int(11) NOT NULL,
-  `description` text DEFAULT NULL,
+  `description` text,
   `id_server_prod` int(11) NOT NULL,
   `cantidad` decimal(11,4) NOT NULL,
   `precio_venta` decimal(11,4) NOT NULL,
@@ -1078,9 +1058,7 @@ INSERT INTO `factura_detalle` (`id_server`, `unique_id`, `id_sucursal`, `id_fact
 (0, 'S6269876bc76102.03282135', 1, 2, 1, 5, '', 0, '36.0000', '11.0000', '29.20', 0, 1, 'PRODUCTO', 0, '2022-04-27', 0, '12:11:55', 16, 0, 0),
 (0, 'S6269959ad78024.03462827', 1, 3, 2, 3, '', 0, '3.0000', '2.5000', '7.50', 0, 1, 'PRODUCTO', 0, '2022-04-27', 0, '13:12:26', 9, 0, 0),
 (0, 'S6269a74952bbe8.83626539', 1, 4, 3, 2, '', 0, '1.0000', '1.0000', '1.00', 0, 1, 'PRODUCTO', 0, '2022-04-27', 0, '14:27:53', 6, 0, 0),
-(0, 'S6269a91c5af740.42537515', 1, 5, 4, 1, '', 0, '1.0000', '1.2500', '1.25', 0, 1, 'PRODUCTO', 0, '2022-04-27', 0, '14:35:40', 2, 0, 0),
-(0, 'S62769a4aad2072.68518739', 1, 7, 5, 1, '', 0, '1.0000', '1.2500', '1.25', 0, 1, 'PRODUCTO', 0, '2022-05-07', 0, '10:11:54', 2, 0, 0),
-(0, 'S62769ad3ec9a24.03539733', 1, 8, 6, 1, '', 0, '1.0000', '1.2500', '1.25', 0, 1, 'PRODUCTO', 0, '2022-05-07', 0, '10:14:11', 2, 0, 0);
+(0, 'S6269a91c5af740.42537515', 1, 5, 4, 1, '', 0, '1.0000', '1.2500', '1.25', 0, 1, 'PRODUCTO', 0, '2022-04-27', 0, '14:35:40', 2, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -3874,13 +3852,6 @@ CREATE TABLE `log_update_local` (
   `id_sucursal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `log_update_local`
---
-
-INSERT INTO `log_update_local` (`id_server`, `unique_id`, `id_log_cambio`, `query`, `tabla`, `fecha`, `hora`, `id_usuario`, `id_sucursal`) VALUES
-(0, 'S62769a4a97b5c2.80594572', 1, 'DELETE FROM factura_detalle WHERE unique_id =\'S62769a41509986.61601572\'', 'factura_detalle', '2022-05-07', '10:11:54', 1, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -3908,7 +3879,7 @@ CREATE TABLE `lote` (
 --
 
 INSERT INTO `lote` (`id_server`, `unique_id`, `id_sucursal`, `id_lote`, `id_producto`, `fecha_entrada`, `numero`, `cantidad`, `precio`, `id_presentacion`, `vencimiento`, `estado`, `referencia`) VALUES
-(0, 'S6254601c0bffb8.33449475', 1, 1, 1, '2022-04-11', 1, '197.0000', '3.0000', 1, NULL, 'VIGENTE', '0000001_II'),
+(0, 'S6254601c0bffb8.33449475', 1, 1, 1, '2022-04-11', 1, '199.0000', '3.0000', 1, NULL, 'VIGENTE', '0000001_II'),
 (0, 'S625465747cbc19.77426666', 1, 2, 2, '2022-04-11', 1, '587.0000', '10.0008', 3, NULL, 'VIGENTE', '0000002_II'),
 (0, 'S625467bd76c059.88646652', 1, 3, 3, '2022-04-11', 1, '67.0000', '15.0000', 7, NULL, 'VIGENTE', '0000003_II'),
 (0, 'S62546b372f4e60.39737022', 1, 4, 4, '2022-04-11', 1, '1200.0000', '23.0016', 10, NULL, 'VIGENTE', '0000004_II'),
@@ -4182,9 +4153,7 @@ INSERT INTO `movimiento_producto` (`id_server`, `unique_id`, `id_sucursal`, `id_
 (0, 'S6269876bc44155.02209762', 1, 6, '0000000001_CCF', 'VENTA', 105, 'SALIDA', 'CCF', '0000000001_CCF', 1, '2022-04-27', '12:11:55', 1, 1, 0, 0, 0, 1, 0, '0', '0'),
 (0, 'S6269959a3f79a8.64627626', 1, 7, '0000000001_TIK', 'VENTA', 7.5, 'SALIDA', 'TIK', '0000000001_TIK', 1, '2022-04-27', '13:12:26', 1, 1, 0, 0, 0, 2, 0, '0', '0'),
 (0, 'S6269a749379bd8.71896827', 1, 8, '0000000002_TIK', 'VENTA', 1, 'SALIDA', 'TIK', '0000000002_TIK', 1, '2022-04-27', '14:27:53', 1, 1, 0, 0, 0, 3, 0, '0', '0'),
-(0, 'S6269a91c5a8bd2.63015876', 1, 9, '0000000003_TIK', 'VENTA', 1.25, 'SALIDA', 'TIK', '0000000003_TIK', 1, '2022-04-27', '14:35:40', 1, 1, 0, 0, 0, 4, 0, '0', '0'),
-(0, 'S62769a4aa04cd4.75615510', 1, 10, '0000000004_TIK', 'VENTA', 1.25, 'SALIDA', 'TIK', '0000000004_TIK', 1, '2022-05-07', '10:11:54', 1, 1, 0, 0, 0, 5, 0, '0', '0'),
-(0, 'S62769ad3dd02a2.37839615', 1, 11, '0000000005_TIK', 'VENTA', 1.25, 'SALIDA', 'TIK', '0000000005_TIK', 1, '2022-05-07', '10:14:11', 1, 1, 0, 0, 0, 6, 0, '0', '0');
+(0, 'S6269a91c5a8bd2.63015876', 1, 9, '0000000003_TIK', 'VENTA', 1.25, 'SALIDA', 'TIK', '0000000003_TIK', 1, '2022-04-27', '14:35:40', 1, 1, 0, 0, 0, 4, 0, '0', '0');
 
 -- --------------------------------------------------------
 
@@ -4229,9 +4198,7 @@ INSERT INTO `movimiento_producto_detalle` (`id_server`, `unique_id`, `id_sucursa
 (0, 'S6269876beff030.86832101', 1, 7, 6, 5, 0, 16, 0, '36.0000', 5.0004, 11, '1200.0000', '1164.0000', '0', '', 0, '2022-04-27', '12:11:55'),
 (0, 'S6269959ad8c064.37078107', 1, 8, 7, 3, 0, 9, 0, '3.0000', 1.7, 2.5, '70.0000', '67.0000', '0', '', 0, '2022-04-27', '13:12:26'),
 (0, 'S6269a7496440e3.86804323', 1, 9, 8, 2, 0, 6, 0, '1.0000', 0.4167, 1, '588.0000', '587.0000', '0', '', 0, '2022-04-27', '14:27:53'),
-(0, 'S6269a91c6de9a6.55822847', 1, 10, 9, 1, 0, 2, 0, '1.0000', 0.75, 1.25, '200.0000', '199.0000', '0', '', 0, '2022-04-27', '14:35:40'),
-(0, 'S62769a4aaeac24.52168470', 1, 11, 10, 1, 0, 2, 0, '1.0000', 0.75, 1.25, '199.0000', '198.0000', '0', '', 0, '2022-05-07', '10:11:54'),
-(0, 'S62769ad3f30970.74321262', 1, 12, 11, 1, 0, 2, 0, '1.0000', 0.75, 1.25, '198.0000', '197.0000', '0', '', 0, '2022-05-07', '10:14:11');
+(0, 'S6269a91c6de9a6.55822847', 1, 10, 9, 1, 0, 2, 0, '1.0000', 0.75, 1.25, '200.0000', '199.0000', '0', '', 0, '2022-04-27', '14:35:40');
 
 -- --------------------------------------------------------
 
@@ -4297,9 +4264,7 @@ INSERT INTO `movimiento_stock_ubicacion` (`id_server`, `unique_id`, `id_sucursal
 (0, 'S6269876be00a70.37949754', 1, 7, 5, 0, 5, 0, '36.0000', '2022-04-27', '12:11:55', 0, 0, 16, 0, 6),
 (0, 'S6269959ad85601.72799916', 1, 8, 3, 0, 3, 0, '3.0000', '2022-04-27', '13:12:26', 0, 0, 9, 0, 7),
 (0, 'S6269a74963d105.58831962', 1, 9, 2, 0, 2, 0, '1.0000', '2022-04-27', '14:27:53', 0, 0, 6, 0, 8),
-(0, 'S6269a91c5be4b2.14548530', 1, 10, 1, 0, 1, 0, '1.0000', '2022-04-27', '14:35:40', 0, 0, 2, 0, 9),
-(0, 'S62769a4aae2b36.42124030', 1, 11, 1, 0, 1, 0, '1.0000', '2022-05-07', '10:11:54', 0, 0, 2, 0, 10),
-(0, 'S62769ad3f28b94.92187031', 1, 12, 1, 0, 1, 0, '1.0000', '2022-05-07', '10:14:11', 0, 0, 2, 0, 11);
+(0, 'S6269a91c5be4b2.14548530', 1, 10, 1, 0, 1, 0, '1.0000', '2022-04-27', '14:35:40', 0, 0, 2, 0, 9);
 
 -- --------------------------------------------------------
 
@@ -4690,7 +4655,7 @@ CREATE TABLE `pedido` (
   `numero_doc` varchar(30) NOT NULL,
   `total` float NOT NULL,
   `id_usuario` int(11) NOT NULL,
-  `anulada` tinyint(1) NOT NULL DEFAULT 0,
+  `anulada` tinyint(1) NOT NULL DEFAULT '0',
   `id_sucursal` int(11) NOT NULL,
   `finalizada` tinyint(1) NOT NULL,
   `id_empleado` int(11) NOT NULL,
@@ -5138,7 +5103,7 @@ CREATE TABLE `producto` (
   `precio` float NOT NULL,
   `precio_mayoreo` float NOT NULL,
   `color` text COLLATE utf8_spanish_ci NOT NULL,
-  `eval` int(11) NOT NULL DEFAULT 0
+  `eval` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
@@ -5339,7 +5304,7 @@ CREATE TABLE `stock` (
 --
 
 INSERT INTO `stock` (`id_server`, `unique_id`, `id_sucursal`, `id_stock`, `id_producto`, `stock`, `stock_local`, `precio_unitario`, `costo_unitario`, `create_date`, `update_date`) VALUES
-(0, 'S6254601c0b8e07.12446803', 1, 1, 1, '197.0000', '200.0000', 1.25, 0.75, '2022-04-11', '2022-05-07'),
+(0, 'S6254601c0b8e07.12446803', 1, 1, 1, '199.0000', '200.0000', 1.25, 0.75, '2022-04-11', '2022-04-27'),
 (0, 'S625465747aec37.22902999', 1, 2, 2, '587.0000', '600.0000', 1, 0.42, '2022-04-11', '2022-04-27'),
 (0, 'S625467bd766113.77920480', 1, 3, 3, '67.0000', '100.0000', 2.5, 1.7, '2022-04-11', '2022-04-27'),
 (0, 'S62546b372ed8a1.29842981', 1, 4, 4, '1200.0000', '1200.0000', 30, 23.0016, '2022-04-11', '2022-04-11'),
@@ -5368,7 +5333,7 @@ CREATE TABLE `stock_ubicacion` (
 --
 
 INSERT INTO `stock_ubicacion` (`id_server`, `unique_id`, `id_sucursal`, `id_su`, `id_producto`, `cantidad`, `id_ubicacion`, `id_estante`, `id_posicion`) VALUES
-(0, 'S6254601c0ae335.99976116', 1, 1, 1, '197.0000', 1, 0, 0),
+(0, 'S6254601c0ae335.99976116', 1, 1, 1, '199.0000', 1, 0, 0),
 (0, 'S6254657479c523.85506477', 1, 2, 2, '587.0000', 1, 0, 0),
 (0, 'S625467bd75c050.68529452', 1, 3, 3, '67.0000', 1, 0, 0),
 (0, 'S62546b372e1de8.24154619', 1, 4, 4, '1200.0000', 1, 0, 0),
@@ -6275,488 +6240,406 @@ ALTER TABLE `voucher_mov`
 --
 ALTER TABLE `abono_credito`
   MODIFY `id_abono_credito` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `access_conf`
 --
 ALTER TABLE `access_conf`
   MODIFY `id_conf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `altclitocli`
 --
 ALTER TABLE `altclitocli`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `apertura_caja`
 --
 ALTER TABLE `apertura_caja`
-  MODIFY `id_apertura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
+  MODIFY `id_apertura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `banco`
 --
 ALTER TABLE `banco`
   MODIFY `id_banco` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `caja`
 --
 ALTER TABLE `caja`
   MODIFY `id_caja` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
   MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
 --
 -- AUTO_INCREMENT de la tabla `categoria_proveedor`
 --
 ALTER TABLE `categoria_proveedor`
   MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
 --
 -- AUTO_INCREMENT de la tabla `cheque`
 --
 ALTER TABLE `cheque`
   MODIFY `id_cheque` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
   MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `compra`
 --
 ALTER TABLE `compra`
   MODIFY `id_compra` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `configuracion`
 --
 ALTER TABLE `configuracion`
   MODIFY `id_configuracion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `config_dir`
 --
 ALTER TABLE `config_dir`
   MODIFY `id_config_dir` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `config_pos`
 --
 ALTER TABLE `config_pos`
   MODIFY `id_config_pos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `consignacion`
 --
 ALTER TABLE `consignacion`
   MODIFY `id_consignacion` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `consignacion_detalle`
 --
 ALTER TABLE `consignacion_detalle`
   MODIFY `id_consignacion_detalle` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `controlcaja`
 --
 ALTER TABLE `controlcaja`
-  MODIFY `id_corte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
+  MODIFY `id_corte` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `correlativo`
 --
 ALTER TABLE `correlativo`
   MODIFY `id_numdoc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
   MODIFY `id_cotizacion` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `cotizacion_detalle`
 --
 ALTER TABLE `cotizacion_detalle`
   MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `credito`
 --
 ALTER TABLE `credito`
   MODIFY `id_credito` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `cuentas_por_pagar_abonos`
 --
 ALTER TABLE `cuentas_por_pagar_abonos`
   MODIFY `id_abono` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `cuenta_banco`
 --
 ALTER TABLE `cuenta_banco`
   MODIFY `id_cuenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `cuenta_pagar`
 --
 ALTER TABLE `cuenta_pagar`
   MODIFY `id_cuenta_pagar` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `detalle_apertura`
 --
 ALTER TABLE `detalle_apertura`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `detalle_compra`
 --
 ALTER TABLE `detalle_compra`
   MODIFY `id_det_compra` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `detalle_voucher`
 --
 ALTER TABLE `detalle_voucher`
   MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `devoluciones`
 --
 ALTER TABLE `devoluciones`
   MODIFY `id_dev` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `devoluciones_corte`
 --
 ALTER TABLE `devoluciones_corte`
   MODIFY `id_dev` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `devoluciones_det`
 --
 ALTER TABLE `devoluciones_det`
   MODIFY `id_dev_det` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `empleado`
 --
 ALTER TABLE `empleado`
   MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `estante`
 --
 ALTER TABLE `estante`
   MODIFY `id_estante` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de la tabla `factura_detalle`
 --
 ALTER TABLE `factura_detalle`
-  MODIFY `id_factura_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
+  MODIFY `id_factura_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT de la tabla `Hoja1`
 --
 ALTER TABLE `Hoja1`
   MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2326;
-
 --
 -- AUTO_INCREMENT de la tabla `log_cambio_local`
 --
 ALTER TABLE `log_cambio_local`
   MODIFY `id_log_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=198;
-
 --
 -- AUTO_INCREMENT de la tabla `log_detalle_cambio_local`
 --
 ALTER TABLE `log_detalle_cambio_local`
   MODIFY `id_detalle_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=168;
-
 --
 -- AUTO_INCREMENT de la tabla `log_update_local`
 --
 ALTER TABLE `log_update_local`
-  MODIFY `id_log_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
+  MODIFY `id_log_cambio` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `lote`
 --
 ALTER TABLE `lote`
   MODIFY `id_lote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
 --
 -- AUTO_INCREMENT de la tabla `menu`
 --
 ALTER TABLE `menu`
   MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
-
 --
 -- AUTO_INCREMENT de la tabla `modulo`
 --
 ALTER TABLE `modulo`
   MODIFY `id_modulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=157;
-
 --
 -- AUTO_INCREMENT de la tabla `movimiento_caja_tipo`
 --
 ALTER TABLE `movimiento_caja_tipo`
   MODIFY `id_tipo` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `movimiento_producto`
 --
 ALTER TABLE `movimiento_producto`
-  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT de la tabla `movimiento_producto_detalle`
 --
 ALTER TABLE `movimiento_producto_detalle`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT de la tabla `movimiento_producto_pendiente`
 --
 ALTER TABLE `movimiento_producto_pendiente`
   MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `movimiento_stock_ubicacion`
 --
 ALTER TABLE `movimiento_stock_ubicacion`
-  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT de la tabla `mov_caja`
 --
 ALTER TABLE `mov_caja`
   MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `mov_cta_banco`
 --
 ALTER TABLE `mov_cta_banco`
   MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `municipio`
 --
 ALTER TABLE `municipio`
   MODIFY `id_municipio` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID del municipio', AUTO_INCREMENT=263;
-
 --
 -- AUTO_INCREMENT de la tabla `nc_corte`
 --
 ALTER TABLE `nc_corte`
   MODIFY `id_nc` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `paises`
 --
 ALTER TABLE `paises`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
   MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `pedido_detalle`
 --
 ALTER TABLE `pedido_detalle`
   MODIFY `id_pedido_detalle` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `pedido_prov`
 --
 ALTER TABLE `pedido_prov`
   MODIFY `id_pedido_prov` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `pedido_prov_detalle`
 --
 ALTER TABLE `pedido_prov_detalle`
   MODIFY `id_pedido_detalle` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `posicion`
 --
 ALTER TABLE `posicion`
   MODIFY `id_posicion` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `precio_aut`
 --
 ALTER TABLE `precio_aut`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
 --
 -- AUTO_INCREMENT de la tabla `presentacion`
 --
 ALTER TABLE `presentacion`
   MODIFY `id_presentacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
 --
 -- AUTO_INCREMENT de la tabla `presentacion_producto`
 --
 ALTER TABLE `presentacion_producto`
   MODIFY `id_pp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=225;
-
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
   MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
-
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
   MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `rutas`
 --
 ALTER TABLE `rutas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `stock`
 --
 ALTER TABLE `stock`
   MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
 --
 -- AUTO_INCREMENT de la tabla `stock_ubicacion`
 --
 ALTER TABLE `stock_ubicacion`
   MODIFY `id_su` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
 --
 -- AUTO_INCREMENT de la tabla `sucursal`
 --
 ALTER TABLE `sucursal`
   MODIFY `id_sucursal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `tipo_empleado`
 --
 ALTER TABLE `tipo_empleado`
   MODIFY `id_tipo_empleado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
 --
 -- AUTO_INCREMENT de la tabla `tipo_pago`
 --
 ALTER TABLE `tipo_pago`
   MODIFY `id_tipopago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
 --
 -- AUTO_INCREMENT de la tabla `tipo_proveedor`
 --
 ALTER TABLE `tipo_proveedor`
   MODIFY `id_tipo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
 --
 -- AUTO_INCREMENT de la tabla `to_corte`
 --
 ALTER TABLE `to_corte`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `to_corte_producto`
 --
 ALTER TABLE `to_corte_producto`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `to_corte_producto_detalle`
 --
 ALTER TABLE `to_corte_producto_detalle`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `traslado`
 --
 ALTER TABLE `traslado`
   MODIFY `id_traslado` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `traslado_detalle`
 --
 ALTER TABLE `traslado_detalle`
   MODIFY `id_detalle_traslado` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `traslado_detalle_g`
 --
 ALTER TABLE `traslado_detalle_g`
   MODIFY `id_detalle_traslado` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `traslado_detalle_recibido`
 --
 ALTER TABLE `traslado_detalle_recibido`
   MODIFY `id_detalle_traslado_recibido` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `traslado_g`
 --
 ALTER TABLE `traslado_g`
   MODIFY `id_traslado` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `ubicacion`
 --
 ALTER TABLE `ubicacion`
   MODIFY `id_ubicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
   MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `usuario_modulo`
 --
 ALTER TABLE `usuario_modulo`
   MODIFY `id_mod_user` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `voucher`
 --
 ALTER TABLE `voucher`
   MODIFY `id_voucher` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT de la tabla `voucher_mov`
 --
 ALTER TABLE `voucher_mov`
   MODIFY `id_mv` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
