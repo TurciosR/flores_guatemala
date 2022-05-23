@@ -44,6 +44,23 @@ if (performance.navigation.type == 1) {
 
 $(document).ready(function() {
 
+    $('.pago_dui').on('keydown', function(event) {
+        if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 13 || event.keyCode == 37 || event.keyCode == 39) {
+    
+        } else {
+          if ((event.keyCode > 47 && event.keyCode < 60) || (event.keyCode > 95 && event.keyCode < 106)) {
+            inputval = $(this).val();
+            var string = inputval.replace(/[^0-9]/g, "");
+            var bloc1 = string.substring(0, 8);
+            var bloc2 = string.substring(8, 8);
+            var string = bloc1 + "-" + bloc2;
+            $(this).val(string);
+          } else {
+            event.preventDefault();
+          }
+    
+        }
+    });
     $(".select_r").select2({
         placeholder: {
             id: '0',
