@@ -2491,6 +2491,7 @@ function aplicar() {
  * Aqui se detecta si agrego propina o no
  */
  $("#establecer_propina").on("ifChecked", function() {
+   
     $.ajax({
         url: 'agregar_servicio.php',
         type: 'POST',
@@ -2499,6 +2500,16 @@ function aplicar() {
         success: function(xdatos)
         {
             $("#inventable").prepend(xdatos.propina);
+            $(".decimal2").numeric({
+                negative: false,
+                decimal: false
+            });
+            $(".86").numeric({
+                negative: false,
+                decimalPlaces: 4
+            });
+            $(".sel").select2();
+            $(".sel_r").select2();
         }
     });
 });
