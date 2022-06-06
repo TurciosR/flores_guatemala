@@ -61,6 +61,11 @@ $(document).ready(function() {
     
         }
     });
+
+    $('#monto_propina').numeric({
+        negative: false
+    });
+
     $(".select_r").select2({
         placeholder: {
             id: '0',
@@ -1425,21 +1430,21 @@ function senddata() {
         break;
         //Tipo pago Tarjeta
       case 2:
-        if ($('.pago_dui').val()=='' || $('.pago_operacion').val()=='') {
+        if ($('.pago_operacion').val()=='') {
             msg = 'Llene datos de pago por favor';
             sel_vendedor = 0;
         }
         break;
         //Tipo pago Bitcoin
       case 3:
-        if ($('.pago_dui').val()=='' || $('.pago_operacion').val()=='') {
+        if ($('.pago_operacion').val()=='') {
             msg = 'Llene datos de pago por favor';
             sel_vendedor = 0;
         }
         break;
         //Tipo pago Transferencia
       case 4:
-        if ($('.pago_dui').val()=='' || $('.pago_operacion').val()=='') {
+        if ($('.pago_operacion').val()=='') {
             msg = 'Llene datos de pago por favor';
             sel_vendedor = 0;
         }
@@ -2481,3 +2486,23 @@ function aplicar() {
     });
 
 };
+
+/**
+ * Aqui se detecta si agrego propina o no
+ */
+ $("#establecer_propina").on("ifChecked", function() {
+    $.ajax({
+        url: 'agregar_servicio.php',
+        type: 'POST',
+        dataType: 'json',
+        data: 'process=propina',
+        success: function(xdatos)
+        {
+            $("#inventable").prepend(xdatos.propina);
+        }
+    });
+});
+$("#establecer_propina").on("ifUnchecked", function() {
+    $('.id_propina').parents("tr").remove();
+    totales();
+});
