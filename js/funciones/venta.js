@@ -2491,7 +2491,6 @@ function aplicar() {
  * Aqui se detecta si agrego propina o no
  */
  $("#establecer_propina").on("ifChecked", function() {
-   
     $.ajax({
         url: 'agregar_servicio.php',
         type: 'POST',
