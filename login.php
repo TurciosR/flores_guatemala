@@ -1,6 +1,6 @@
 <?php
 session_start();
-ini_set('error_reporting', E_ALL);
+ini_set('error_reporting', E_PARSE|E_ERROR);
 ini_set('display_errors', 1);
 require_once("_conexion.php");
 if($_POST){

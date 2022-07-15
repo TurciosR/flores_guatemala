@@ -48,6 +48,13 @@ function _insert_id(){
 	$value = mysqli_insert_id($conexion);
 	return $value;
 }
+/**
+ * Retorna las filas efectadas por la sentencia update.
+ */
+function _affected_rows(){
+	global $conexion;
+	return mysqli_affected_rows($conexion);
+}
 // End functions queries
 
 //funcion real escape string

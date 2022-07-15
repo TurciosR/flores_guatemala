@@ -631,7 +631,7 @@
 					else{
 						$nombre = "ADMINISTRADOR";
 					}
-	    							
+
 	    							$turno_txt = "";
 										echo "<input type='hidden' id='aper_id' name='aper_id' value='".$id_apertura."'>";
 	    							/////////////////////////////////////////////////////////////////////////////////////////////
@@ -938,7 +938,7 @@
 							$rr = _fetch_array($sql_empleadox);
 							$nombre = $rr["nombre"];
 						}
-			    							
+
 
 
 
@@ -1036,13 +1036,13 @@
         # code...
         $sql_empleado = _query("SELECT empleado.nombre FROM usuario JOIN empleado ON usuario.id_empleado = empleado.id_empleado WHERE usuario.id_usuario = '$id_empleado'");
 
-      }	
+      }
 	  $nombre = "";
 	  		if(_num_rows($sql_empleado) > 0){
 				$rr = _fetch_array($sql_empleado);
 				$nombre = $rr["nombre"];
 			}
-			
+
 			$turno_txt = "";
 			echo "<input type='hidden' id='aper_id' name='aper_id' value='".$id_apertura."'>";
 			/////////////////////////////////////////////////////////////////////////////////////////////
@@ -1238,7 +1238,7 @@
 				$diferencia = $row_cc["diferencia"];
 				$turno = $row_cc["turno"];
 
-				$sql_empleadox = _query("SELECT * FROM empleados WHERE id_empleado = '$id_empleado_c'");
+				$sql_empleadox = _query("SELECT * FROM empleado WHERE id_empleado = '$id_empleado_c'");
 				$rr = _fetch_array($sql_empleadox);
 				$nombre = $rr["nombre"];
 

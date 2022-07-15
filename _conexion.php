@@ -1,8 +1,8 @@
 <?php
 $username = "root";
-$password = "1234";
+$password = "admin$";
 $hostname = "localhost";
-$dbname = "fguatemala";
+$dbname = "flores_guatemala";
 date_default_timezone_set('America/El_Salvador');
 $conexion = mysqli_connect("$hostname","$username","$password","$dbname");
 if (mysqli_connect_errno()){
@@ -63,6 +63,13 @@ function _insert_id(){
   global $conexion;
   $value = mysqli_insert_id($conexion);
   return $value;
+}
+/**
+ * Retorna las filas efectadas por la sentencia update.
+ */
+function _affected_rows(){
+	global $conexion;
+	return mysqli_affected_rows($conexion);
 }
 // End functions queries
 

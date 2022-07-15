@@ -121,6 +121,9 @@ function cambio(tipo)
           var monto_apertura = datax.monto_apertura;
           var monto_ch = datax.monto_ch;
           var monto_retencion = datax.monto_retencion;
+		  var monto_pago_tarjeta = datax.monto_pago_tarjeta;
+		  var monto_pago_bitcoin = datax.monto_pago_bitcoin;
+		  var monto_pago_transferencia = datax.monto_pago_transferencia;
 
 
 
@@ -154,6 +157,9 @@ function cambio(tipo)
             fila += "<tr><td>CREDITO FISCAL</td><td>"+credito_fiscal_min+"</td><td>"+credito_fiscal_max+"</td><td>"+t_credito+"</td><td>"+total_credito_fiscal+"</td></tr><tr>";
             fila += "<td colspan='4'>MONTO APERTURA</td><td><label id='id_total1'>"+monto_apertura+"</label></td></tr>";
             fila += "<td colspan='4'>MONTO CAJA CHICA</td><td><label id='id_total12'>"+monto_ch+"</label></td></tr>";
+			fila += "<td colspan='4'>(-PAGOS TARJETA)</td><td><label id='id_totalre'>"+monto_pago_tarjeta+"</label></td></tr>";
+			fila += "<td colspan='4'>(-PAGOS BITCOIN)</td><td><label id='id_totalre'>"+monto_pago_bitcoin+"</label></td></tr>";
+			fila += "<td colspan='4'>(-PAGOS TRANSFERENCIA)</td><td><label id='id_totalre'>"+monto_pago_transferencia+"</label></td></tr>";
             fila += "<td colspan='4'>(-RETENCION)</td><td><label id='id_totalre'>"+monto_retencion+"</label></td></tr>";
             fila += "<tr><td colspan='4'>TOTAL</td><td><label id='id_total'>"+total_corte+"</label></td></tr>";
 

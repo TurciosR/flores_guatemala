@@ -1,8 +1,11 @@
 <?php
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 include "_conexion.php";
 
-$fini = "2021-11-15";
-$fin = "2021-11-30";
+$fini = "2022-06-22";
+$fin = "2022-06-22";
 $total_g_m = 0;
 $total_e_m = 0;
 $total_t_m = 0;
@@ -22,7 +25,7 @@ while(strtotime($fini) <= strtotime($fin))
   $sql = _query("SELECT * FROM factura WHERE fecha='$fini' AND tipo='TICKET' ORDER BY fecha ASC");
   while ($row =_fetch_array($sql))
   {
-    //echo "TIKET ".$row["numero_doc"]."<br>";
+  //  echo "TIKET ".$row["numero_doc"]."<br>";
     if($row["anulada"])
     {
       $tot_g_e = 0;
@@ -37,22 +40,28 @@ while(strtotime($fini) <= strtotime($fin))
     $tot_g = 0;
     $tot_e = 0;
     $tot = 0;
-    $sql_aux = _query('SELECT factura_detalle.*, producto.descripcion, producto.exento as exen FROM factura_detalle JOIN producto ON producto.id_producto=factura_detalle.id_prod_serv WHERE id_factura="'.$row["id_factura"].'"');
+    //ESTS CONSULTA SOLO ARROJA RESULTADOS DE ES UN PRODUCTO
+    $sql_aux = _query('SELECT factura_detalle.*, producto.descripcion, producto.exento as exen FROM factura_detalle JOIN producto ON producto.id_producto=factura_detalle.id_prod_serv WHERE id_factura="'.$row["id_factura"].'" ');
+    if (_num_rows($sql_aux)>0)
+    {
     while ($row_aux =_fetch_array($sql_aux))
     {
       $sql_aux_aux = _query("SELECT * FROM presentacion_producto WHERE id_pp='".$row_aux["id_presentacion"]."'");
       $datos_aux_aux = _fetch_array($sql_aux_aux);
-      
+
       $n_precio = "Personalizado";
+
+      //PRODUCTOS
       if($datos_aux_aux["costo"]>0)
       {
+        echo "TIKET ".$row["numero_doc"]."<br>";
         $min = round(($datos_aux_aux["costo"]*1.10),2);
         $subtotal = round(($row_aux["cantidad"]*$min),2);
         /************************************************/
         /************************************************/
         /************************************************/
         /************************************************/
-        
+
         if($subtotal<$row_aux['subtotal'])
         {
             $table_aux = "factura_detalle";
@@ -91,9 +100,70 @@ while(strtotime($fini) <= strtotime($fin))
         }
       }
     }
+  }//fin de la condicion si el resultado num_rows es mayor que cero
+  else
+  {
+    $sql_servicios= _query('SELECT * FROM factura_detalle WHERE id_factura="'.$row["id_factura"].'"');
+    while ($datos_servicios = _fetch_array($sql_servicios))
+    {
+      // code...
+      //SERVICIOS
+      if($datos_servicios["id_prod_serv"]==-9999)
+      {
+        echo "SERVICIO <br>";
+        $min = round(($datos_servicios["precio_venta"]/1.10),2);
+        $subtotal = round(($datos_servicios["cantidad"]*$min),2);
+        /************************************************/
+        /************************************************/
+        /************************************************/
+        /************************************************/
+
+        if($subtotal<$datos_servicios['subtotal'])
+        {
+            $table_aux = "factura_detalle";
+            $id_detalle = $datos_servicios["id_factura_detalle"];
+            $form_data_aux = array(
+            'precio_venta' => $min,
+            'subtotal' => $subtotal,
+            );
+            $where_aux = "id_factura_detalle='$id_detalle'";
+            if(!_update($table_aux,$form_data_aux,$where_aux))
+            {
+            $err =1;
+            }
+        }
+        else
+        {
+            $subtotal = $datos_servicios['subtotal'];
+        }
+      }
+
+      if(!$row["anulada"])
+      {
+        $tot += $subtotal;
+      }
+      if($datos_servicios["exento"] == "1")
+      {
+        if(!$row["anulada"])
+        {
+          $tot_e += $subtotal;
+        }
+      }
+      else {
+        if(!$row["anulada"])
+        {
+          $tot_g += $subtotal;
+        }
+      }
+    }
+  }
+
+
     /**********************************************************/
     /**********************************************************/
     /**********************************************************/
+    //echo "TIKET ".$row_aux["costo"]."<br>";
+    //echo "TIKET ".$row_aux["id_presentacion"]."<br>";
     $table = "factura";
     $id_factura = $row["id_factura"];
     $form_data = array(

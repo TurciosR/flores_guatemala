@@ -1263,7 +1263,7 @@ function print_ccf($id_fact,$tipo_id,$nitcte,$nrccte,$nombreapecte,$direccion)
 	$arrayL= array();
 	for ($i=0; $i < $logitud_array; $i++) {
 		// code...
-		$arrayL[$i]=st("",100)."\n";
+		$arrayL[$i]=st("",130)."\n";
 	}
 
 	$sql_fact="SELECT * FROM factura WHERE id_factura='$id_factura'";
@@ -1291,7 +1291,6 @@ function print_ccf($id_fact,$tipo_id,$nitcte,$nrccte,$nombreapecte,$direccion)
 		$usuario=$row_user['usuario'];
 		$nombreusuario=$row_user['nombre'];
 
-
 		//$nombres=$row_user['apellido']." ".$row_user['nombre'];
 		//Datos del Cliente
 
@@ -1311,6 +1310,7 @@ function print_ccf($id_fact,$tipo_id,$nitcte,$nrccte,$nombreapecte,$direccion)
 						$nombres=$row1['nombre'];
 						$depart=$row1['nombre_departamento'];
 						$direccion=$row1['direccion'];
+						$nrc=$row1['nrc'];
 				}
 		}
 
@@ -1319,6 +1319,7 @@ function print_ccf($id_fact,$tipo_id,$nitcte,$nrccte,$nombreapecte,$direccion)
 		$giro_cte1=$giro_cte;
 		$total_final=0;
 		$nit_cliente = $nit;
+		$nrc_cliente = $nrc;
 
 		$nombreapecte=trim($nombreapecte);
 
@@ -1327,14 +1328,15 @@ function print_ccf($id_fact,$tipo_id,$nitcte,$nrccte,$nombreapecte,$direccion)
 		/*$arrayL[9]=  p_set($arrayL[9],$diaa,72,79,"B");
 		$arrayL[9]=  p_set($arrayL[9],$mess,82,92,"B");
 		$arrayL[9]=  p_set($arrayL[9],$anio,97,103,"B");*/
-		$arrayL[5]=  p_set($arrayL[5],$nombre_ape,22,76,"R");
-		$arrayL[5]=  p_set($arrayL[5],$diaa."-".$mess."-".$anio,90,124,"R");
+		$arrayL[6]=  p_set($arrayL[6],$nombre_ape,22,76,"R");
+		$arrayL[6]=  p_set($arrayL[6],$diaa."-".$mess."-".$anio,90,124,"R");
 	//$arrayL[11]=  p_set($arrayL[11],substr($dir_txt,0,43),21,103,"R");
 	/*ESCRIBIENDO EL CONTENIDO DE UNA VARIABLE EN DOS LINEAS*/
 		$arrayL[7]=  p_set($arrayL[7],substr($direccion_cliente,0,45),26,76,"R");
+		$arrayL[7]=  p_set($arrayL[7],$nrc_cliente,95,124,"R");
 		$arrayL[9]=  p_set($arrayL[9],substr($direccion_cliente,45),26,76,"R");
 		//$arrayL[7]=  p_set($arrayL[7],$direccion_cliente,26,76,"R");
-		$arrayL[7]=  p_set($arrayL[7],$nrccte,95,124,"L");
+
 		$arrayL[9]=  p_set($arrayL[9],$nit_cliente,85,124,"R");
 		$arrayL[11]=  p_set($arrayL[11],$depart,30,76,"R");
 		$arrayL[11]=  p_set($arrayL[11],$giro_cte1,85,124,"R");
@@ -1532,14 +1534,14 @@ function print_ccf($id_fact,$tipo_id,$nitcte,$nrccte,$nombreapecte,$direccion)
 
 		$arrayL[$array_painc[$key]]=p_set($arrayL[$array_painc[$key]],$value,20,80,"B");
 	}
-	$arrayL[39] = p_set($arrayL[39],$total_value_gravado,111,124,"L");
-	$arrayL[40] = p_set($arrayL[40],$total_iva_format,111,124,"L");
-	$arrayL[42] = p_set($arrayL[42],$subtotal_gravado_print,111,124,"L");
-	$arrayL[44] = p_set($arrayL[44],$retencion,111,124,"L");
-	$arrayL[45] = p_set($arrayL[45],"0.0000",111,124,"L");
-	$arrayL[47] = p_set($arrayL[47],$total_value_exento,111,124,"L");
+	$arrayL[39] = p_set($arrayL[39],$total_value_gravado,115,124,"L");
+	$arrayL[40] = p_set($arrayL[40],$total_iva_format,115,124,"L");
+	$arrayL[42] = p_set($arrayL[42],$subtotal_gravado_print,115,124,"L");
+	$arrayL[44] = p_set($arrayL[44],$retencion,115,124,"L");
+	$arrayL[45] = p_set($arrayL[45],"0.0000",115,124,"L");
+	$arrayL[47] = p_set($arrayL[47],$total_value_exento,115,124,"L");
 	//$arrayL[56] = p_set($arrayL[56],"0.0000",111,124,"L");
-	$arrayL[49] = p_set($arrayL[49],sprintf("%.2f",$total_final_format),111,124,"L");
+	$arrayL[49] = p_set($arrayL[49],sprintf("%.2f",$total_final_format),115,124,"L");
 
 
 	foreach ($arrayL as $key => $value) {

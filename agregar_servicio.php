@@ -191,7 +191,64 @@ function obtener()
 
 	echo json_encode($xdatos);
 }
+/**
+ * Esta funcion permite colocar un item de propina a la 
+ * tabla de la venta
+ */
+function insertar_propina()
+{
+	$id_servicio  = -9999;
+	$nombre_servicio = "PROPINA";
+	$uni = uniqid();
+	
+	$lista="";
+	$lista.= "<tr class='row100 head service $uni'>";
+	$lista.="<td class='cell100 column10 text-success id_pps' hidden=''>";
+	$lista.="<input id='unidades' name='unidades' value='1' type='hidden'>".+$id_servicio."";
+	$lista.="</td>";
+	$lista.="<td class='cell100 column10 text-success id_propina' hidden=''>";
+	$lista.="<input id='id_servicio' name='unidades' value='' type='hidden'>".+$id_servicio."";
+	$lista.="</td>";
+	$lista.="<td class='cell100 column30 text-success descripcion_insumo' >".$nombre_servicio."";
+	$lista.="<input id='exento' name='exento' value='1' type='hidden'>";
+	$lista.="</td>";
+	$lista.="<td class='cell100 column10 text-success' id='cant_stock'>1";
+	$lista.="</td>";
+	$lista.="<td class='cell100 column10 text-success'>";
+	$lista.="<div><input disabled class=form-control decimal2 cant' id='cant' name='cant' value='1' style='width:60px;' type='text'>";
+	$lista.="</div>";
+	$lista.="</td>";
+	$lista.="<td class='cell100 column10 text-success preccs'>";
+	$lista.="<select disabled class='sel form-control'>";
+	$lista.="<option value='-9999'>UNIDAD</option>";
+	$lista.="</select>";
+	$lista.="</td>";
+	$lista.="<td style='display:none' class='cell100 column10 text-success descp'>";
+	$lista.="<input type'text'='' id='dsd' class='form-control' value='SERVICIO' readonly=''>";
+	$lista.="</td>";
+	$lista.="<td class='cell100 column10 text-success rank_s'>";
+	$lista.="<select disabled class='sel_r precio_r form-control '>";
+	$lista.="<option value='' selected=''></option>";
+	$lista.="</select>";
+	$lista.="</td>";
+	$lista.="<td class='cell100 column10 text-success'>";
+	$lista.="<input id='precio_venta_inicial' name='precio_venta_inicial' value='' type='hidden'>";
+	$lista.="<input id='precio_sin_iva' name='precio_sin_iva' value='' type='hidden'>";
+	$lista.="<input class='form-control decimal' id='precio_venta' name='precio_venta' value='' type='text'>";
+	$lista.="</td>";
+	$lista.="<td class='ccell100 column10'>";
+	$lista.="<input id='subtotal_fin' name='subtotal_fin'  value='' type='hidden'>";
+	$lista.="<input class='decimal txt_box form-control' id='subtotal_mostrar' name='subtotal_mostrar'  value='' readonly='' type='text'>";
+	$lista.="</td>";
+	$lista.="<td class='cell100 column10  text-center'>";
+	$lista.="<input id='delprod' class='btn btn-danger fa fa-trash Delete' value='' type='button'>";
+	$lista.="</td>";
+	$lista.="</tr>";
 
+	$xdata['propina'] = $lista;
+
+	echo json_encode($xdata);
+}
 if (! isset ( $_REQUEST ['process'] )) {
 	initial();
 } else {
@@ -202,6 +259,9 @@ if (! isset ( $_REQUEST ['process'] )) {
 			break;
 			case 'obtener' :
 				obtener();
+			break;
+			case 'propina' :
+				insertar_propina();
 			break;
 			}
 		}
