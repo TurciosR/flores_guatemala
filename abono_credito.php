@@ -13,7 +13,11 @@ function initial()
   $links=permission_usr($id_user, $filename);
   $fecha=date('d-m-Y');
   $id_sucursal=$_SESSION['id_sucursal'];
-  $sql0="SELECT credito.fecha,credito.numero_doc,credito.total,credito.abono,credito.saldo FROM credito LEFT JOIN cliente ON cliente.id_cliente=credito.id_cliente WHERE credito.id_credito=$id_credito";
+  $sql0="SELECT credito.fecha,credito.numero_doc,credito.total,credito.abono,credito.saldo 
+    FROM credito 
+    LEFT JOIN cliente 
+    ON cliente.id_cliente=credito.id_cliente 
+    WHERE credito.id_credito=$id_credito";
   $result = _query($sql0);
   $numrows= _num_rows($result);
   for ($i=0;$i<$numrows;$i++) {
@@ -133,8 +137,7 @@ $(document).ready(function(){
 } //permiso del script
 else {
 
-  $mensaje = mensaje_permiso();
-  echo "<br><br>$mensaje</div></div></div></div>";
+  echo "<br><br><div class='alert alert-warning'>No tiene permiso para este modulo.</div></div></div></div></div>";
   include "footer.php";
 }
 }

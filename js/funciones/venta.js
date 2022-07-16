@@ -1,6 +1,20 @@
+/**
+ * This file is part of the OpenPyme1.
+ * 
+ * (c) Open Solution Systems <operaciones@tumundolaboral.com.sv>
+ * 
+ * For the full copyright and license information, please refere to LICENSE file
+ * that has been distributed with this source code.
+ */
+
 var urlprocess = '';
 var sending = 0;
 // theme: "classic",
+
+//BORRA LOS DATOS DEL LOCALSTORAGE AL RECARGAR PAGINA
+window.onload=function () {
+    localStorage.clear()
+}
 
 $(window).keydown(function(event) {
     if (event.keyCode == 13) {
@@ -392,6 +406,9 @@ function cargar_ref() {
     a = $('#vendedor');
     b = $('#id_cliente');
     c = $('#tipo_impresion');
+    d = $('#id_empleado');
+    e = $('#con_pago');
+    $('#con_pago').val();
 
 
     var n_ref = $("#n_ref").val();
@@ -418,6 +435,10 @@ function cargar_ref() {
 
                 $("#inventable").html(lista);
                 //console.log(lista);
+
+                $('#con_pago').val(datax.tipo_pago);
+                e.trigger('change');
+
                 $("#id_empleado").val(datax.id_empleado);
                 $("#vendedor").val(datax.id_empleado);
                 $("#id_factura").val(datax.id_factura);
@@ -1106,8 +1127,38 @@ function guardar_preventa() {
     var i = 0;
     var StringDatos = "";
     var id = '1';
-    var id_empleado = 0;
+    var array_cliente = new Array();
+    var cant_abonar_cl_exis = $("#cant_abonar_cl_exis").val();
+
+    /**
+     * Obteniendo datos del cliente, la variable cliente_nuevo
+     * almacena un estado, este sera 1 si el cliente se ha
+     * agregado desde la ventana modal de nuevo credito
+     */
+    var cliente_nuevo = $("#cliente_nuevo").val();
     var id_cliente = $("#id_cliente option:selected").val();
+
+    if(cliente_nuevo == 1){
+        /**
+         * Tambien obtenemos los datos del cliente colocados en el modal
+         * los cuales estan almacenados de forma temporal en el
+         * localstorage
+         */
+        if(localStorage.getItem("cliente_nuevo")){
+
+            let datos_cliente = JSON.parse(localStorage.getItem("cliente_nuevo"));
+
+            var obj = new Object();
+            obj.nombre = datos_cliente.nombre;
+            obj.telefono = datos_cliente.telefono;
+            obj.dui = datos_cliente.dui;
+            obj.cant_abonar = datos_cliente.cant_abonar;
+
+            text = JSON.stringify(obj);
+            array_cliente.push(text);
+        }
+    }
+
     var items = $("#items").val();
     var msg = "";
     //IMPUESTOS
@@ -1135,6 +1186,7 @@ function guardar_preventa() {
     var id_vendedor = $("#vendedor option:selected").val();
 
     var tipo_impresion = $('#tipo_impresion').val();
+    var credito = $('#con_pago').val();
 
 
     var fecha_movimiento = $("#fecha").val();
@@ -1209,8 +1261,10 @@ function guardar_preventa() {
     dataString += '&id_factura=' + id_factura;
     dataString += '&precio_aut=' + precio_aut;
     dataString += '&clave=' + clave;
-
-
+    dataString += '&cliente_nuevo=' + cliente_nuevo;
+    dataString += '&array_cliente=' + array_cliente;
+    dataString += '&credito=' + credito;
+    dataString += '&cant_abonar_cl_exis=' + cant_abonar_cl_exis;
 
     if (id_cliente == "") {
         msg = 'Seleccione un Cliente!';
@@ -2515,4 +2569,21 @@ function aplicar() {
 $("#establecer_propina").on("ifUnchecked", function() {
     $('.id_propina').parents("tr").remove();
     totales();
+});
+
+/**
+ * En este apartado enviamos el id del cliente seleccionado
+ * al modal de Credito abono
+ */
+$('#credito_abono').click(function (e) {
+     
+    let id_cliente = $('#id_cliente').val();
+    $.ajax({
+        type: "GET",
+        url: "credito_abono.php",
+        data: 'id_cliente='+id_cliente,
+        success: function (response) {            
+            $('#content_creditoAB').html(response);
+        }
+    });
 });

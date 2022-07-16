@@ -75,6 +75,16 @@ function initial() {
         AND credito=0"));
 	$monto_retencion=$sql_monto_dev['total_retencion'];
 
+
+	/**
+     * OBTENIENDO TOTAL VENTAS AL CREDITO
+     */
+    $sql_ventas_credito=_fetch_array(_query("SELECT SUM(factura.total) 
+        AS total_credito FROM factura 
+        WHERE id_apertura_pagada=$aper_id 
+        AND credito=1"));
+	$monto_ventas_credito=$sql_ventas_credito['total_credito'];
+
     /**
      * OBTENIENDO TOTAL PAGOS CON TARJETA
      */
@@ -415,7 +425,7 @@ function initial() {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//$total_devolucion = $total_dev_g + $total_dev_e;
 
-    $total_otros_pagos = $monto_pago_tarjeta + $monto_pago_bitcoin + $monto_pago_transferencia;
+    $total_otros_pagos = $monto_pago_tarjeta + $monto_pago_bitcoin + $monto_pago_transferencia + $monto_ventas_credito;
 	$total_nopagado = $total_tike_npago + $total_factura_npago + $total_credito_fiscal_npago;
 	$total_corte_2 = $total_tike_2 + $total_factura_2 + $total_credito_fiscal_2 + $monto_apertura + $total_entrada_caja  + $monto_ch;
 	$total_corte_2 = round($total_corte_2 - $total_otros_pagos,2);
@@ -576,6 +586,10 @@ function initial() {
 										<tr>
 											<td colspan="4">MONTO CAJA CHICA</td>
 											<td><label id="id_total12"><?php echo number_format($monto_ch,2,".",",");?></label></td>
+										</tr>
+										<tr>
+											<td colspan="4">(-VENTAS AL CREDITO)</td>
+											<td><label id="id_totalre"><?php echo number_format($monto_ventas_credito,2,".",",");?></label></td>
 										</tr>
                                         <tr>
 											<td colspan="4">(-PAGOS TARJETA)</td>
@@ -857,6 +871,12 @@ function initial() {
 										<input type="hidden" name="lista_dev" id="lista_dev" value="<?php print_r($lista_dev);?>">
 										<input type="hidden" name="lista_nc" id="lista_nc" value="<?php print_r($lista_nc);?>">
 										<input type="hidden" name="retencion" id="retencion" value="<?php echo $monto_retencion;?>">
+										
+										<!-- TOTALIZADO DEL DETALLE DE OTROS PAGOS -->
+										<input type="hidden" name="ventas_al_credito" id="ventas_al_credito" value="<?php echo $monto_ventas_credito;?>">
+										<input type="hidden" name="pago_tarjeta" id="pago_tarjeta" value="<?php echo $monto_pago_tarjeta;?>">
+										<input type="hidden" name="pago_bitcoin" id="pago_bitcoin" value="<?php echo $monto_pago_bitcoin;?>">
+										<input type="hidden" name="pago_transferencia" id="pago_transferencia" value="<?php echo $monto_pago_transferencia;?>">
 
 
 										<input type="hidden" name="t_tike" id="t_tike" value="<?php echo $t_tike_2;?>">
@@ -963,6 +983,15 @@ function initial() {
 		$monto_ch = $_POST["monto_ch"];
 		$caja = $_POST["caja_apertura"];
 		$retencion=$_POST['retencion'];
+
+		/**
+		 * OTROS PAGOS
+		 */
+		$tot_ventas_credito = $_POST['ventas_al_credito'];
+		$tot_pago_tarjeta = $_POST['pago_tarjeta'];
+		$tot_pago_bitcoin = $_POST['pago_bitcoin'];
+		$tot_pago_transf = $_POST['pago_transferencia'];
+
 		$sql_cajax = _query("SELECT correlativo_dispo FROM caja WHERE id_caja = '$caja'");
 		$rc = _fetch_array($sql_cajax);
 		$correlativo_dispo = $rc["correlativo_dispo"];
@@ -1012,6 +1041,10 @@ function initial() {
 			'monto_ch' => $monto_ch,
 			'caja' => $caja,
 			'retencion' => $retencion,
+			'tot_ventas_credito' => $tot_ventas_credito,
+			'tot_pago_tarjeta' => $tot_pago_tarjeta,
+			'tot_pago_bitcoin' => $tot_pago_bitcoin,
+			'tot_pago_transf' => $tot_pago_transf,
 		);
 		$id_cortex="";
 		$sql_ = _query("SELECT * FROM controlcaja WHERE id_apertura = '$id_apertura' AND tipo_corte = 'Z'");
@@ -1295,6 +1328,27 @@ function initial() {
 			$monto_retencion=$sql_monto_dev['total_retencion'];
 			$monto_retencion=round($monto_retencion,2);
 
+			/**
+			 * OBTENIENDO TOTAL DE ENTRADAS EN CAJA
+			 */
+			$sql_entradas_caja = _fetch_array(_query(
+				"SELECT SUM(valor) as total_entradas 
+				FROM `mov_caja` 
+				WHERE id_apertura = $aper_id AND entrada = 1 "
+			));
+			$monto_entradas_caja = $sql_entradas_caja['total_entradas'];
+			$monto_entradas_caja = round($monto_entradas_caja, 2);
+
+			/**
+             * OBTENIENDO TOTAL VENTAS AL CREDITO
+             */
+            $sql_ventas_credito=_fetch_array(_query("SELECT SUM(factura.total) 
+            AS total_credito FROM factura 
+            WHERE id_apertura_pagada=$aper_id 
+            AND credito=1"));
+            $monto_ventas_credito=$sql_ventas_credito['total_credito'];
+            $monto_ventas_credito=round($monto_ventas_credito,2);
+
             /**
              * OBTENIENDO TOTAL PAGOS CON TARJETA
              */
@@ -1328,7 +1382,7 @@ function initial() {
             /**
              * Haciendo la suma total de otros pagos
              */
-            $total_otros_pagos = $monto_pago_tarjeta + $monto_pago_bitcoin + $monto_pago_transferencia;
+            $total_otros_pagos = $monto_pago_tarjeta + $monto_pago_bitcoin + $monto_pago_transferencia + $monto_ventas_credito;
 
 			date_default_timezone_set('America/El_Salvador');
 			$fecha_actual=date("Y-m-d");
@@ -1797,9 +1851,11 @@ function initial() {
 			$xdatos['monto_apertura'] = round($monto_apertura,2);
 			$xdatos['monto_ch'] = round($monto_ch,2);
 			$xdatos['monto_retencion'] = round($monto_retencion,2);
+			$xdatos['monto_ventas_credito'] = round($monto_ventas_credito,2);
             $xdatos['monto_pago_tarjeta'] = round($monto_pago_tarjeta,2);
             $xdatos['monto_pago_bitcoin'] = round($monto_pago_bitcoin,2);
             $xdatos['monto_pago_transferencia'] = round($monto_pago_transferencia,2);
+			$xdatos['total_entradas_caja'] = round($monto_entradas_caja,2);
 			if ($tipo_corte == "C")
 			{
 				# code...
