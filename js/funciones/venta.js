@@ -14,6 +14,10 @@ var sending = 0;
 //BORRA LOS DATOS DEL LOCALSTORAGE AL RECARGAR PAGINA
 window.onload=function () {
     localStorage.clear()
+    let referencia_cargada = $('#n_ref').val();
+    if(referencia_cargada != 0){
+        cargar_ref();
+    }
 }
 
 $(window).keydown(function(event) {
@@ -410,6 +414,9 @@ function cargar_ref() {
     e = $('#con_pago');
     $('#con_pago').val();
 
+    //Deshabilitamos el boton de nuevo credito
+    $('#credito_abono').prop('disabled', true);
+
 
     var n_ref = $("#n_ref").val();
     var fecha = $("#fecha").val();
@@ -438,8 +445,29 @@ function cargar_ref() {
 
                 $('#con_pago').val(datax.tipo_pago);
                 e.trigger('change');
+                /**
+                 * Si esta venta es al credito, vamos a
+                 * deshabilitar la opcion de cambiar el
+                 * tipo de pago
+                 */
+                if(datax.tipo_pago == 1)
+                {
+                    $('#con_pago').prop('disabled', true);
+                }
+                
+
+                /**
+                 * Si el credito aun no se ha terminado de abonar, deshabilitaremos
+                 * el boton de pagar 
+                 */
+                if(datax.credito_pendiente == 1)
+                {
+                    $('#submit1').prop('disabled', true);
+                }
 
                 $("#id_empleado").val(datax.id_empleado);
+                d.trigger('change');
+
                 $("#vendedor").val(datax.id_empleado);
                 $("#id_factura").val(datax.id_factura);
                 $("#numero_doc").val(datax.numero_doc);
@@ -490,7 +518,10 @@ function cargar_ref() {
 
                 $("#vendedor").val("");
                 $("#caja_detalles").html("");
+
                 $("#id_empleado").val("");
+                d.trigger('change');
+
                 $("#id_factura").val("");
                 $("#numero_doc").val("");
                 $("#inventable").html("");
@@ -1175,6 +1206,7 @@ function guardar_preventa() {
         id_factura = 0;
     }
 
+    var id_apertura = $('#id_apertura').val();
     var subtotal = $('#total_gravado_iva').text(); /*total gravado mas iva subtotal*/
     var suma_gravada = $('#total_gravado_sin_iva').text(); /*total sumas sin iva*/
     var sumas = $('#total_gravado').text(); /*total sumas sin iva + exentos*/
@@ -1183,7 +1215,7 @@ function guardar_preventa() {
     var venta_exenta = $('#total_exenta').text(); /*total venta exenta*/
     var total = $('#totalfactura').val();
 
-    var id_vendedor = $("#vendedor option:selected").val();
+    var id_vendedor = $("#id_empleado option:selected").val();
 
     var tipo_impresion = $('#tipo_impresion').val();
     var credito = $('#con_pago').val();
@@ -1265,6 +1297,7 @@ function guardar_preventa() {
     dataString += '&array_cliente=' + array_cliente;
     dataString += '&credito=' + credito;
     dataString += '&cant_abonar_cl_exis=' + cant_abonar_cl_exis;
+    dataString += '&id_apertura=' + id_apertura;
 
     if (id_cliente == "") {
         msg = 'Seleccione un Cliente!';
@@ -1273,6 +1306,11 @@ function guardar_preventa() {
 
     if (tipo_impresion == "") {
         msg = 'Seleccione un tipo de impresion!';
+        sel_vendedor = 0;
+    }
+
+    if (id_vendedor == "") {
+        msg = 'Seleccione un vendedor!';
         sel_vendedor = 0;
     }
 
@@ -1323,7 +1361,6 @@ function senddata() {
     var i = 0;
     var StringDatos = "";
     var id = '1';
-    var id_empleado = 0;
     var id_cliente = $("#id_cliente").val();
     var items = $("#items").val();
     var msg = "";
@@ -1341,7 +1378,7 @@ function senddata() {
     var venta_exenta = $('#total_exenta').text(); /*total venta exenta*/
     var total = $('#totalfactura').val();
     var tipo_pago = $('#con_pago').val();
-    var id_vendedor = $("#vendedor").val();
+    var id_vendedor = $("#id_empleado option:selected").val();
     var id_apertura = $('#id_apertura').val();
     var turno = $('#turno').val();
     var caja = $('#caja').val();
@@ -1454,6 +1491,11 @@ function senddata() {
 
     if (id_cliente == "") {
         msg = 'No hay un Cliente!';
+        sel_vendedor = 0;
+    }
+
+    if (id_vendedor == "") {
+        msg = 'Seleccione un vendedor!';
         sel_vendedor = 0;
     }
 
@@ -1992,16 +2034,16 @@ function imprimev() {
                     function(isConfirm) {
                         if (isConfirm) {
                             setTimeout(function() {
-                                location.reload();
+                                location.href = 'venta.php';
                             }, 500);
                         } else {
                             setTimeout(function() {
-                                location.reload();
+                                location.href = 'venta.php';
                             }, 500);
                         }
                     });
                 setTimeout(function() {
-                    location.reload();
+                    location.href = 'venta.php';
                 }, 3000);
             }
         });

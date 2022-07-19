@@ -1,8 +1,8 @@
 <?php
 $username = "root";
-$password = "admin$";
+$password = "1234";
 $hostname = "localhost";
-$dbname = "flores_guatemala";
+$dbname = "fguatemala";
 date_default_timezone_set('America/El_Salvador');
 $conexion = mysqli_connect("$hostname","$username","$password","$dbname");
 if (mysqli_connect_errno()){

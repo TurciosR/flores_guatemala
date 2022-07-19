@@ -113,6 +113,12 @@ function initial()
         $fecha_actual = date('Y-m-d'); // $tipo_doc = $row_coti["tipo_doc"];
         $pedi = '';
     }
+
+    /**
+     * Obteniendo referencia desde admin creditos
+     */
+    $n_ref_credito = (isset($_REQUEST['n_ref']) ? 
+        $_REQUEST['n_ref'] : 0);
     ?>
 
     <style media="screen">
@@ -215,10 +221,10 @@ function initial()
                                     }
                                     ?>
 
-                                    <a data-toggle='modal' href='agregar_servicio.php' style='margin-right:1%;' data-target='#viewModal2' data-refresh='true' class='btn btn-sm btn-warning pull-right'></i>
-                                        Servicio</a>
-                                    <a data-toggle='modal' id="credito_abono" style='margin-right:1%;' data-target='#creditoAbono' data-refresh='true' class='btn btn-sm btn-info pull-right'></i>
-                                        Nuevo Credito</a>
+                                    <button type="button" data-toggle='modal' href='agregar_servicio.php' style='margin-right:1%;' data-target='#viewModal2' data-refresh='true' class='btn btn-sm btn-warning pull-right'></i>
+                                        Servicio</button>
+                                    <button type="button" data-toggle='modal' id="credito_abono" style='margin-right:1%;' data-target='#creditoAbono' data-refresh='true' class='btn btn-sm btn-info pull-right'></i>
+                                        Nuevo Credito</button>
                                 </div>
                             </div>
                             <div class="row">
@@ -262,7 +268,7 @@ function initial()
                                 <div class="col-md-2 form-group">
                                     <label>Referencia</label>
                                     <select class="form-control select_r" name="n_ref" id="n_ref">
-                                        <option value="0">Seleccione</option>
+                                        <option value="<?php echo $n_ref_credito;?>">Seleccione</option>
                                         <?php
                                         $sql =
                                             "SELECT cliente.nombre, factura.total,numero_ref 
@@ -1058,11 +1064,10 @@ function initial()
 function cargar_data()
 {
     $id_sucursal = $_SESSION['id_sucursal'];
-    $n_ref = $_POST['n_ref'];
-    $fecha = date('Y-m-d'); /////////////////////// FACTURA
+    $n_ref = $_POST['n_ref'];/////////////////////// FACTURA
     $sql_fact = "SELECT factura.id_factura, factura.id_cliente,factura.id_empleado, factura.credito,
         factura.fecha,  factura.numero_doc, factura.tipo_documento, factura.precio_aut,factura.clave
-        FROM factura WHERE numero_ref = $n_ref AND fecha = '$fecha' AND finalizada != 1"; //echo $sql_fact;
+        FROM factura WHERE numero_ref = $n_ref AND finalizada != 1"; //echo $sql_fact;
     $result_fact = _query($sql_fact);
     $count_fact = _num_rows($result_fact);
     if ($count_fact > 0) {
@@ -1298,6 +1303,7 @@ function cargar_data()
             $monto = $row_serv['precio_venta'];
             $monto = round($monto, 4);
             $subtotal = $row_serv['subtotal'];
+            $servicio_exento = $row_serv['exento'];
             $uni = uniqid();
             $lista .= "<tr class='row100 head service $uni'>";
             $lista .=
@@ -1312,7 +1318,7 @@ function cargar_data()
                 $nombre_servicio .
                 '';
             $lista .=
-                "<input id='exento' name='exento' value='0' type='hidden'>";
+                "<input id='exento' name='exento' value='$servicio_exento' type='hidden'>";
             $lista .= '</td>';
             $lista .=
                 "<td class='cell100 column10 text-success' id='cant_stock'>1";
@@ -1444,6 +1450,25 @@ function cargar_data()
             $select_tipo_impresion .=
                 "<option value='CCF'>CREDITO FISCAL</option>";
         }
+
+        /**
+         * Si esta preventa esta al credito, obtenemos los datos
+         * respectivos de esta cuenta por cobrar, para saber
+         * si aun posee saldo pendiente
+         */
+        $sql_credito_preventa = _fetch_array(
+            _query(
+                "SELECT saldo FROM credito WHERE id_factura=$id_factura"
+            )
+        );
+        if($sql_credito_preventa['saldo'] != 0)
+        {
+            $credito_pendiente = 1;
+        }else
+        {
+            $credito_pendiente = 0;
+        }
+
         $xdatos['typeinfo'] = 'Success';
         $xdatos['msg'] = '';
         $xdatos['id_cliente'] = $id_cliente;
@@ -1461,6 +1486,7 @@ function cargar_data()
         $xdatos['precio_aut'] = $precio_aut;
         $xdatos['clave'] = $clave;
         $xdatos['tipo_pago'] = $tipo_pago;
+        $xdatos['credito_pendiente'] = $credito_pendiente;
     } else {
         $xdatos['typeinfo'] = 'Error';
         $xdatos['msg'] = 'No se encontro documento';
@@ -1976,7 +2002,16 @@ function insertar()
         }
     }
     $cre = 1;
-    if ($credito == 1) {
+
+    /**
+     * Corroboramos si esta factura posee creditos vigentes
+     * de ser asi evitaremos crear una nueva cuenta de credito
+     */
+    $creditos_actuales = _num_rows(
+        _query("SELECT * FROM credito WHERE id_factura = '".$id_factura."'")
+    );
+
+    if ($credito == 1 && $creditos_actuales <= 0) {
         $table = 'credito';
         $form_data = [
             'id_cliente' => $id_cliente,
@@ -2953,6 +2988,28 @@ function insertar_preventa()
     $array_cliente = $_POST['array_cliente'];
 
     /**
+     * Comprobamos primero si el credito se trata de 
+     * un cliente nuevo
+     */
+    if($credito == 1){
+        if($cliente_nuevo == 1)
+        {
+            $cliente_arr = json_decode($array_cliente, true);
+            
+            $nombre_cliente = $cliente_arr['nombre'];
+            $telefono_cliente = $cliente_arr['telefono'];
+            $dui_cliente = $cliente_arr['dui'];
+            $cant_abonar_cliente_new = $cliente_arr['cant_abonar'];
+
+            $id_cliente = guardar_nuevo_cliente(
+                $nombre_cliente, 
+                $telefono_cliente, 
+                $dui_cliente
+            );
+        }
+    }
+
+    /**
      * Cantidad a abonar de un cliente existente
      */
     $cant_abonar_cliente_exis = $_POST['cant_abonar_cl_exis'];
@@ -3066,153 +3123,84 @@ function insertar_preventa()
         if ($credito == 1) {
 
             /**
-             * Comprobamos primero si se trata de un cliente
-             * nuevo
+             * Para saber que tipo de cliente va a realizar
+             * este credito, evaluamos la bandera de cliente
+             * nuevo, de acuerdo a esto vamos a setear la
+             * cantidad a abonar de este credito
              */
             if($cliente_nuevo == 1)
             {
-                $cliente_arr = json_decode($array_cliente, true);
-                
-                $nombre_cliente = $cliente_arr['nombre'];
-                $telefono_cliente = $cliente_arr['telefono'];
-                $dui_cliente = $cliente_arr['dui'];
-                $cant_abonar = $cliente_arr['cant_abonar'];
-
-                $id_cliente_inserted = guardar_nuevo_cliente(
-                    $nombre_cliente, 
-                    $telefono_cliente, 
-                    $dui_cliente
-                );
-
-                $saldo = $total_menos_retencion - $cant_abonar;
-
-                /**
-                 * Despues de registrar el cliente, vamos a
-                 * crear su nueva cuenta por cobrar
-                 */
-                $table = 'credito';
-                $form_data = [
-                    'id_cliente' => $id_cliente_inserted,
-                    'fecha' => $fecha_movimiento,
-                    'tipo_doc' => $tipo_documento,
-                    'numero_doc' => $numero_doc,
-                    'id_factura' => $id_fact,
-                    'dias' => '30',
-                    'total' => $total_menos_retencion,
-                    'abono' => $cant_abonar,
-                    'saldo' => $saldo,
-                    'finalizada' => 0,
-                    'id_sucursal' => $id_sucursal,
-                    'id_server' => '0',
-                ];
-                $insert = _insert($table, $form_data);
-                if ($insert) 
-                {
-                    # code...
-                    $id_credito = _insert_id();
-
-                    $table = 'abono_credito';
-                    $form_data = array(
-                        'id_credito' => $id_credito,
-                        'abono' => $cant_abonar_cliente_exis,
-                        'fecha' => $fecha_movimiento,
-                        'hora' => $hora,
-                        'tipo_doc' => $tipo_documento,
-                        'num_doc' => $numero_doc,
-                    );
-                    $insertar1 = _insert($table, $form_data);
-                    if ($insertar1)
-                    {
-                        $id_abono_credito = _insert_id();
-                    
-                        $table = 'mov_caja';
-                        $form_data = array(
-                            'idtransace' => $id_abono_credito,
-                            'numero_doc' => $numero_doc,
-                            'fecha' => $fecha_movimiento,
-                            'hora' => $hora,
-                            'valor' =>  $cant_abonar_cliente_exis,
-                            'concepto' => 'POR ABONO A CREDITO',
-                            'id_empleado' => $id_empleado,
-                            'id_sucursal' => $id_sucursal,
-                            'entrada' => 1,
-                            'turno' => $turno,
-                            'id_apertura' => $id_apertura,
-                        );
-                        $insertar = _insert($table, $form_data);
-                    }
-                } 
-                else 
-                {
-                    # code...
-                    $credd = 0;
-                }
+                $cant_abonar_cred = $cant_abonar_cliente_new;
             }
             else
             {
-                $saldo = $total_menos_retencion - $cant_abonar_cliente_exis;
-                /**
-                 * Si el cliente ya existe, vamos a
-                 * crear su nueva cuenta por cobrar
-                 */
-                $table = 'credito';
-                $form_data = [
-                    'id_cliente' => $id_cliente,
-                    'fecha' => $fecha_movimiento,
-                    'tipo_doc' => $tipo_documento,
-                    'numero_doc' => $numero_doc,
-                    'id_factura' => $id_fact,
-                    'dias' => '30',
-                    'total' => $total_menos_retencion,
-                    'abono' => $cant_abonar_cliente_exis,
-                    'saldo' => $saldo,
-                    'finalizada' => 0,
-                    'id_sucursal' => $id_sucursal,
-                    'id_server' => '0',
-                ];
-                $insert = _insert($table, $form_data);
-                if ($insert) 
-                {
-                    # code...
-                    $id_credito = _insert_id();
+                $cant_abonar_cred = $cant_abonar_cliente_exis;
+            }
 
-                    $table = 'abono_credito';
+            $saldo = $total_menos_retencion - $cant_abonar_cred;
+            
+            /**
+             * Ya obtenido el saldo a abonar vamos a
+             * crear su nueva cuenta por cobrar
+             */
+            $table = 'credito';
+            $form_data = [
+                'id_cliente' => $id_cliente,
+                'fecha' => $fecha_movimiento,
+                'tipo_doc' => $tipo_documento,
+                'numero_doc' => $numero_doc,
+                'id_factura' => $id_fact,
+                'dias' => '30',
+                'total' => $total_menos_retencion,
+                'abono' => $cant_abonar_cred,
+                'saldo' => $saldo,
+                'finalizada' => 0,
+                'id_sucursal' => $id_sucursal,
+                'id_server' => '0',
+            ];
+            $insert = _insert($table, $form_data);
+            if ($insert) 
+            {
+                # code...
+                $id_credito = _insert_id();
+
+                $table = 'abono_credito';
+                $form_data = array(
+                    'id_credito' => $id_credito,
+                    'abono' => $cant_abonar_cred,
+                    'fecha' => $fecha_movimiento,
+                    'hora' => $hora,
+                    'tipo_doc' => $tipo_documento,
+                    'num_doc' => $numero_doc,
+                );
+                $insertar1 = _insert($table, $form_data);
+                if ($insertar1)
+                {
+                    $id_abono_credito = _insert_id();
+                
+                    $table = 'mov_caja';
                     $form_data = array(
-                        'id_credito' => $id_credito,
-                        'abono' => $cant_abonar_cliente_exis,
+                        'idtransace' => $id_abono_credito,
+                        'numero_doc' => $numero_doc,
                         'fecha' => $fecha_movimiento,
                         'hora' => $hora,
-                        'tipo_doc' => $tipo_documento,
-                        'num_doc' => $numero_doc,
+                        'valor' =>  $cant_abonar_cred,
+                        'concepto' => 'POR ABONO A CREDITO',
+                        'id_empleado' => $id_empleado,
+                        'id_sucursal' => $id_sucursal,
+                        'entrada' => 1,
+                        'turno' => $turno,
+                        'id_apertura' => $id_apertura,
                     );
-                    $insertar1 = _insert($table, $form_data);
-                    if ($insertar1)
-                    {
-                        $id_abono_credito = _insert_id();
-                    
-                        $table = 'mov_caja';
-                        $form_data = array(
-                            'idtransace' => $id_abono_credito,
-                            'numero_doc' => $numero_doc,
-                            'fecha' => $fecha_movimiento,
-                            'hora' => $hora,
-                            'valor' =>  $cant_abonar_cliente_exis,
-                            'concepto' => 'POR ABONO A CREDITO',
-                            'id_empleado' => $id_empleado,
-                            'id_sucursal' => $id_sucursal,
-                            'entrada' => 1,
-                            'turno' => $turno,
-                            'id_apertura' => $id_apertura,
-                        );
-                        $insertar = _insert($table, $form_data);
-                    }
-                } 
-                else 
-                {
-                    # code...
-                    $credd = 0;
+                    $insertar = _insert($table, $form_data);
                 }
+            } 
+            else 
+            {
+                # code...
+                $credd = 0;
             }
+            
         }
     } else {
         # code...
@@ -3256,6 +3244,46 @@ function insertar_preventa()
         if (!$delete) {
             # code...
             $b = 0;
+        }
+
+        /**
+         * COMPROBACION DE PREVENTA CUANDO EL
+         * CLIENTE ESTA MODIFICANDO UN CREDITO CON
+         * ABONO INICIAL
+         */
+        $credd = 1;
+        if ($credito == 1) {
+            $sql_credito_preventa = _fetch_array(
+                _query(
+                    "SELECT * FROM credito WHERE id_factura=$id_factura"
+                )
+            );
+
+            $total_abono = $sql_credito_preventa['abono'];
+            $total_credito = $sql_credito_preventa['total'];
+
+            /**
+             * Evaluamos si se han añadido mas cosas a la preventa
+             */
+            if($total_menos_retencion != $total_credito){
+                /**
+                 * Si se agregaron (o quitaron) mas servicios o productos, el
+                 * monto total de la venta cambio, por ende el total 
+                 * de la cuenta de credito de este cliente
+                 * tambien cambiara
+                 */
+                $nuevo_total_credito = $total_menos_retencion;
+                $nuevo_saldo_credito = $nuevo_total_credito - $total_abono;
+            }
+
+            $table = 'credito';
+            $form_data = array(
+                'total' => $nuevo_total_credito,
+                'saldo' => $nuevo_saldo_credito,
+            );
+            $where_clause = "id_factura='" . $id_factura . "'";
+            $updates = _update($table, $form_data, $where_clause);
+
         }
     }
 

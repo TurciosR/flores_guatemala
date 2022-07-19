@@ -286,8 +286,7 @@ function initial(){
 				}
 
 				/**
-				 * ALMACENANDO EN LOCALSTORAGE DATOS DE UN CLIENTE
-				 * NUEVO
+				 * TOMANDO DATOS DE CLIENTE Y/0 CANTIDAD A ABONAR
 				 */
 				$('#guardar_credito').click(function (e) { 
 					e.preventDefault();
@@ -365,6 +364,14 @@ function initial(){
 											 * cliente es un cliente nuevo
 											 */
 											$('#cliente_nuevo').val(1);
+
+											/**
+											 * Actualizamos el select de tipo de pago
+											 * seteando la opcion de credito
+											 */
+											$('#con_pago').val(1);
+                							$('#con_pago').trigger('change');
+											$('#con_pago').prop('disabled', true);
 										}
 									});
 								}
@@ -400,6 +407,14 @@ function initial(){
 						 * REALIZE LA REFERENCIA
 						 */
 						$('#submit1').prop('disabled', true);
+
+						/**
+						 * Actualizamos el select de tipo de pago
+						 * seteando la opcion de credito
+						 */
+						$('#con_pago').val('1');
+						$('#con_pago').trigger('change');
+						$('#con_pago').prop('disabled', true);
 					}
 				});
 			});
